@@ -9,7 +9,7 @@ namespace PasswordGenerator
         {
             Console.WriteLine("PASSWORD GENERATOR");
 
-            // generates a new password 
+            // Generates a new password 
             //   - from a current one (from whitch the app will take the symbols, in order
             //        to preserve validity for the login purpose (since some apps-logins doesn't allow 
             //        certain specific symbols)
@@ -22,7 +22,9 @@ namespace PasswordGenerator
             int passwLength = initialPassw.Length;
             string initialPasswSymbols = GetSymbols(initialPassw);
             int passwAlphanumLength = passwLength - initialPasswSymbols.Length;
+            // The number of letters will be half of the non-symbol character amount
             int passwAlphaLength = (int)Math.Round((decimal)(passwAlphanumLength / 2));
+            // The number of number will be half of the non-symbol character amount
             int passNumLength = passwAlphanumLength - passwAlphaLength;
 
             string symbols = GetSymbols(initialPassw);
@@ -38,7 +40,7 @@ namespace PasswordGenerator
                 char ch = (char)('a' + a);
                 string str = ch.ToString();
 
-                // If i is even`, return Uppercase
+                // If i is even, return Uppercase
                 System.Math.DivRem(i, 2, out int outvalue);
                 if (outvalue == 0)
                     str = str.ToUpper();
@@ -63,7 +65,7 @@ namespace PasswordGenerator
             outputPassw = RearrangeString(outputPassw);
             outputPassw = RearrangeString(outputPassw);
 
-            
+
             Console.WriteLine("RESULTADO: ");
             Console.WriteLine(outputPassw);
 
@@ -89,9 +91,9 @@ namespace PasswordGenerator
 
         private static string RearrangeString(string inputString)
         {
-            Random num = new Random();
+            Random random = new Random();
             string rand = new string(inputString.
-                OrderBy(s => (num.Next(2) % 2) == 0).ToArray());
+                OrderBy(s => (random.Next(2) % 2) == 0).ToArray());
             return rand;
         }
 
@@ -103,30 +105,27 @@ namespace PasswordGenerator
             {
                 if (!Char.IsLetter(inputChar) & !Char.IsNumber(inputChar))
                 {
-                    //Console.WriteLine(inputChar + " is a Symbol");
-                    toReturn += inputChar.ToString();
-                }
-                    
-                //else
-                    //Console.WriteLine(inputChar + " is not a Symbol");
-            }           
+                    toReturn += inputChar.ToString();                    
+                }                
+            }
 
             return toReturn;
         }
-}
-
-public static class ArrayExtensions
-{
-    public static int Push<T>(this T[] source, T value)
-    {
-        var index = Array.IndexOf(source, default(T));
-
-        if (index != -1)
-        {
-            source[index] = value;
-        }
-
-        return index;
     }
+
+
+//public static class ArrayExtensions
+//{
+//    public static int Push<T>(this T[] source, T value)
+//    {
+//        var index = Array.IndexOf(source, default(T));
+
+//        if (index != -1)
+//        {
+//            source[index] = value;
+//        }
+
+//        return index;
+//    }
 }
-}
+
