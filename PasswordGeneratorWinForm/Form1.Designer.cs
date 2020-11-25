@@ -1,4 +1,4 @@
-﻿namespace PasswordGeneratorWinForms
+﻿namespace PasswordGeneratorWinForm
 {
     partial class Form1
     {

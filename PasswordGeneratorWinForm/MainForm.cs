@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PasswordGeneratorWinForms
+namespace PasswordGeneratorWinForm
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -22,7 +22,12 @@ namespace PasswordGeneratorWinForms
 
         }
 
-        private void txtExistingPassword_TextChanged(object sender, EventArgs e)
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtExistingPassw_TextChanged(object sender, EventArgs e)
         {
             string existingPassw = this.txtExistingPassw.Text;
 
@@ -82,32 +87,6 @@ namespace PasswordGeneratorWinForms
             outputPassw = RearrangeString(outputPassw);
 
             this.txtNewPassword.Text = outputPassw;
-
-            //Console.WriteLine("symbols: " + symbols);
-            //Console.WriteLine("letters: " + letters);
-            //Console.WriteLine("numbers: " + numbers);
-
-            //Console.WriteLine("RESULTADO: ");
-            //Console.WriteLine(outputPassw);
-
-            //Console.Read();
-
-            //do
-            //{
-            //    if (!Console.KeyAvailable)
-            //    {
-            //        // Do something
-            //        if (Console.ReadKey(true).Key == ConsoleKey.A)
-            //        {
-            //            Console.WriteLine("Has presionado la Primera tecla del Alfabeto: " + ConsoleKey.A);
-            //        }
-            //        else
-            //        {
-            //            Console.WriteLine("Has presionado  " + Console.ReadKey(true).Key);
-            //        }                   
-            //    }
-            //} while (Console.ReadKey(true).Key != ConsoleKey.Escape);
-            //Environment.Exit(0);
         }
 
         private static string RearrangeString(string inputString)
@@ -134,4 +113,3 @@ namespace PasswordGeneratorWinForms
         }
     }
 }
-
