@@ -1,42 +1,48 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace PasswordGenerator
+namespace PasswordGeneratorWinForms
 {
-    class Program
+    public partial class Form1 : Form
     {
-        static void Main(string[] args)
+        public Form1()
         {
-            Console.WriteLine("PASSWORD GENERATOR");
+            InitializeComponent();
+        }
 
-            // Generates a new password 
-            //   - from a current one (from whitch the app will take the symbols, in order
-            //        to preserve validity for the login purpose (since some apps-logins doesn't allow 
-            //        certain specific symbols)
-            //   - from chosen types of characters (uppercase letters, lowercase letters, numbers and symbols)
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
 
-            //TODO: Implement generation of password from chosen types of characters 
-            //TOOD: Ask for initial pasword
+        }
 
-            string initialPassw = "__-!_oF424-_5-_?y5!!pp68_,FuPa34YY53.----5._.,NY0";
-            
+        private void txtExistingPassword_TextChanged(object sender, EventArgs e)
+        {
+            string existingPassw = this.txtExistingPassw.Text;
+
             string outputPassw = String.Empty;
 
-            int passwLength = initialPassw.Length;
-            string initialPasswSymbols = GetSymbols(initialPassw);
-            int passwAlphanumLength = passwLength - initialPasswSymbols.Length;
+            int passwLength = existingPassw.Length;
+            string existingPasswSymbols = GetSymbols(existingPassw);
+            int passwAlphanumLength = passwLength - existingPasswSymbols.Length;
             // The number of letters will be half of the non-symbol character amount
             int passwAlphaLength = (int)Math.Round((decimal)(passwAlphanumLength / 2));
             // The number of number will be half of the non-symbol character amount
             int passNumLength = passwAlphanumLength - passwAlphaLength;
 
-            Console.WriteLine("initialPasswSymbols: " + initialPasswSymbols);
-            Console.WriteLine("initialPasswSymbols.Length: " + initialPasswSymbols.Length);
-            Console.WriteLine("passwAlphaLength: " + passwAlphaLength);
-            Console.WriteLine("passNumLength: " + passNumLength);
+            //Console.WriteLine("initialPasswSymbols: " + initialPasswSymbols);
+            //Console.WriteLine("initialPasswSymbols.Length: " + initialPasswSymbols.Length);
+            //Console.WriteLine("passwAlphaLength: " + passwAlphaLength);
+            //Console.WriteLine("passNumLength: " + passNumLength);
 
 
-            string symbols = initialPasswSymbols;
+            string symbols = existingPasswSymbols;
             string letters = String.Empty;
             string numbers = String.Empty;
 
@@ -68,21 +74,23 @@ namespace PasswordGenerator
             }
 
             outputPassw = String.Concat(symbols, letters, numbers);
-            Console.WriteLine("  outputPassw: " + outputPassw);
+            //Console.WriteLine("  outputPassw: " + outputPassw);
             outputPassw = RearrangeString(outputPassw);
 
             //Additional calls because the result was too dummy (too equal-type chars together)
             outputPassw = RearrangeString(outputPassw);
             outputPassw = RearrangeString(outputPassw);
 
-            Console.WriteLine("symbols: " + symbols);
-            Console.WriteLine("letters: " + letters);
-            Console.WriteLine("numbers: " + numbers);
+            this.txtNewPassword.Text = outputPassw;
 
-            Console.WriteLine("RESULTADO: ");
-            Console.WriteLine(outputPassw);
+            //Console.WriteLine("symbols: " + symbols);
+            //Console.WriteLine("letters: " + letters);
+            //Console.WriteLine("numbers: " + numbers);
 
-            Console.Read();
+            //Console.WriteLine("RESULTADO: ");
+            //Console.WriteLine(outputPassw);
+
+            //Console.Read();
 
             //do
             //{
@@ -117,28 +125,13 @@ namespace PasswordGenerator
             {
                 if (!Char.IsLetter(inputChar) & !Char.IsNumber(inputChar))
                 {
-                    toReturn += inputChar.ToString();                                       
-                }                   
+                    toReturn += inputChar.ToString();
+                }
             }
 
             //Console.WriteLine("Total simbols:  " + counter + ", y son: " + toReturn);
             return toReturn;
         }
     }
-
-
-//public static class ArrayExtensions
-//{
-//    public static int Push<T>(this T[] source, T value)
-//    {
-//        var index = Array.IndexOf(source, default(T));
-
-//        if (index != -1)
-//        {
-//            source[index] = value;
-//        }
-
-//        return index;
-//    }
 }
 
