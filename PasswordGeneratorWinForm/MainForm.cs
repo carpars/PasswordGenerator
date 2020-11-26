@@ -72,7 +72,7 @@ namespace PasswordGeneratorWinForm
             for (int i = 0; i < passNumLength; i++)
             {
                 Random random = new Random();
-                // random lowercase letter
+                // random number
                 int a = random.Next(0, 9);
                 string str = a.ToString();
                 numbers += str;
