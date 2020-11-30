@@ -9,6 +9,10 @@ namespace WPA.Pages
 {
     public class IndexModel : PageModel
     {
+        public string InputPassword { get; set; }
+        public string OutPassword { get; set; }        
+        public string Length { get; set; }
+        public string Settings { get; set; }
         public void OnGet()
         {
             throw new Exception("Entra on get");
@@ -21,3 +25,4 @@ namespace WPA.Pages
 
     }
 }
+
