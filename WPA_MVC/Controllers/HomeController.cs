@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WPA_MVC.Models;
+using WPA_MVC.Infrastructure;
 
 namespace WPA_MVC.Controllers
 {
@@ -13,25 +14,48 @@ namespace WPA_MVC.Controllers
     {
         public IActionResult Index()
         {
-            Passwords passwords = new Passwords();
+            Passwords passwords = new Passwords()
+            {
+                InputToUse = false,
+                MinLength = Constants.PasswordMinLength,
+                MaxLength = Constants.PasswordMaxLength
+            };
             return View(passwords);
         }
 
         [HttpPost]
         public IActionResult Index(Passwords passwordsRequest)
         {
+            string inputToUse = Request.Form["existingPassw"];
+
             Passwords passwords = new Passwords()
             {
-                InputToUse = passwordsRequest.InputToUse,
+                InputToUse = String.Equals(inputToUse, "1") ? passwordsRequest.InputToUse = true : passwordsRequest.InputToUse = false,
                 InputPassword = passwordsRequest.InputPassword,
                 OutputPassword = passwordsRequest.OutputPassword,
                 Length = passwordsRequest.Length,
+                MinLength = Constants.PasswordMinLength,
+                MaxLength = Constants.PasswordMaxLength,
                 Settings = passwordsRequest.Settings
             };
 
-            // TODO: Set a User advise if InputToUse == true and Length == null
-            int passwLength = (passwords.InputToUse && !String.IsNullOrWhiteSpace(passwords.Length)) ? Int32.Parse(passwords.Length) : passwords.InputPassword.Length;
-            string existingPasswSymbols = GetSymbols(passwords.InputPassword);
+            int passwLength = 0;
+            // TODO: Set a User advise if InputToUse == true and InputPassword == null
+            if (!passwords.InputToUse)
+            {
+                passwLength = Int32.Parse(passwords.Length);
+            }
+            else if (passwords.InputPassword != null)
+            {
+                passwLength = passwords.InputPassword.Length;
+            }
+            else
+            {
+                passwLength = Int32.Parse(passwords.Length);
+
+            }                           
+            
+            string existingPasswSymbols = passwords.InputToUse ? (passwords.InputPassword != null ? GetSymbols(passwords.InputPassword) : SetSymbols()) : SetSymbols();
             int passwAlphanumLength = passwLength - existingPasswSymbols.Length;
             // The number of letters will be half of the non-symbol character amount
             int passwAlphaLength = (int)Math.Round((decimal)(passwAlphanumLength / 2));
@@ -100,6 +124,12 @@ namespace WPA_MVC.Controllers
 
             //Console.WriteLine("Total simbols:  " + counter + ", y son: " + toReturn);
             return toReturn;
+        }
+
+        private static string SetSymbols()
+        {
+            // TODO: Complete
+            return ")$=:";       
         }
        
         public IActionResult About()

@@ -11,6 +11,8 @@ namespace WPA_MVC.Models
         public string InputPassword { get; set; }
         public string OutputPassword { get; set; }
         public string Length { get; set; }
+        public int MinLength { get; set; }
+        public int MaxLength { get; set; }
         public string Settings { get; set; }
     }
 }

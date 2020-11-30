@@ -10,8 +10,7 @@ namespace WPA.Models
     {
         public string InputValue { get; set; }
         public string OutputValue { get; set; }
-        public int Length { get; set; }
-    
+        public int Length { get; set; }        
         private string _value { get; set; }
         private int _length { get; set; }
         private int _symbolsLength { get; set; }

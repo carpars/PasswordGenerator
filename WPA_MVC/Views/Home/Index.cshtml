@@ -1,5 +1,6 @@
-﻿@model  WPA_MVC.Models.Passwords
+﻿@model WPA_MVC.Models.Passwords
 @{
+    string inputToUse = Model.InputToUse ? "1" : "0";
     ViewData["Title"] = "Home Page";
 }
 
@@ -8,19 +9,19 @@
 
 <form method="post">
     <div class="row">
-        <div class="col-xs-12">
-            <div class="float-left">
-                <input id="rdoUseExisting" type="radio" class="pull-left col-xs-1" name="existingPassw" asp-for="InputToUse" value="1" />
-            </div>
-            <label for="rdoUseExisting" class="font-size-normal col-xs-11">Use an existing password (the new password will have the same length and the same symbols)</label>
+        <div class="col-xs-1 float-left">
+            <input id="rdoUseExisting" type="radio" class="col-xs-2" name="existingPassw" value="1" />
+        </div>
+        <div class="col-xs-11">
+            <label for="rdoUseExisting" class="font-size-normal col-xs-10">Use an existing password (the new password will have the same length and the same symbols)</label>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
-            <div class="float-left">
-                <input id="rdoDontUseExisting" type="radio" class="pull-left col-xs-1" name="existingPassw" asp-for="InputToUse" value="0" checked />
-            </div>
-            <label for="rdoDontUseExisting" class="font-size-normal col-xs-11">Don't use an existing password</label>
+        <div class="col-xs-1 float-left">
+            <input id="rdoDontUseExisting" type="radio" class="pull-left col-xs-2" name="existingPassw" value="0" />
+        </div>
+        <div class="col-xs-11">
+            <label for="rdoDontUseExisting" class="font-size-normal col-xs-10">Don't use an existing password</label>
         </div>
     </div>
     <div class="row">
@@ -30,6 +31,30 @@
             </div>
             <div class="form-group">
                 <input id="txtNewPassw" type="text" class="form-control" asp-for="OutputPassword" value="@Model.OutputPassword" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <select id="selSettings" class="form-control" asp-for="Length">
+                    @{ for (int i = Model.MinLength; i <= Model.MaxLength; i++)
+                        {
+                            if (Model.Length == null && i == Model.MinLength)
+                            {
+                                <option class="container-1row-font-size-normal" selected>@i</option>
+                            }
+                            else if (Model.Length != null && i == Int32.Parse(Model.Length))
+                            {
+                                <option class="container-1row-font-size-normal" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option class="container-1row-font-size-normal">@i</option>
+                            }
+                        }
+                    }
+                </select>
             </div>
         </div>
     </div>
@@ -57,3 +82,19 @@
         </div>
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        let inputToUse = "@inputToUse";
+
+        $(document).ready(function(){
+            if (inputToUse == "1") {
+                $("#rdoUseExisting").attr("checked", "checked");
+            }
+            else {
+                $("#rdoDontUseExisting").attr("checked", "checked");
+            }
+            console.log(inputToUse);
+        });
+    </script>
+}
