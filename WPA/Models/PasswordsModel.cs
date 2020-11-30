@@ -6,15 +6,12 @@ using System.Threading.Tasks;
 namespace WPA.Models
 {
 
-    public class PasswordModel
+    public class Passwords
     {
         public string InputValue { get; set; }
         public string OutputValue { get; set; }
         public int Length { get; set; }
-        public int[] Settings{ get; set; }
-    }
-    public class Password
-    {
+    
         private string _value { get; set; }
         private int _length { get; set; }
         private int _symbolsLength { get; set; }
@@ -22,7 +19,7 @@ namespace WPA.Models
         private int _numbersLength { get; set; }
         private string _symbols { get; set; }
 
-        public Password(string value)
+        public Passwords(string value)
         { 
             //There is no existing password and it's needed
             //  to fetch all settings to generate one
@@ -131,7 +128,6 @@ namespace WPA.Models
             //Console.WriteLine("Total simbols:  " + counter + ", y son: " + toReturn);
             return toReturn;
         }
-
     }
 }
 
