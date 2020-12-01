@@ -41,21 +41,16 @@ namespace WPA_MVC.Controllers
 
             int passwLength = 0;
             // TODO: Set a User advise if InputToUse == true and InputPassword == null
-            if (!passwords.InputToUse)
-            {
-                passwLength = Int32.Parse(passwords.Length);
-            }
-            else if (passwords.InputPassword != null)
+            if (passwords.InputPassword != null)
             {
                 passwLength = passwords.InputPassword.Length;
             }
             else
             {
                 passwLength = Int32.Parse(passwords.Length);
-
             }                           
             
-            string existingPasswSymbols = passwords.InputToUse ? (passwords.InputPassword != null ? GetSymbols(passwords.InputPassword) : SetSymbols()) : SetSymbols();
+            string existingPasswSymbols = passwords.InputPassword != null ? GetSymbols(passwords.InputPassword) : SetSymbols();
             int passwAlphanumLength = passwLength - existingPasswSymbols.Length;
             // The number of letters will be half of the non-symbol character amount
             int passwAlphaLength = (int)Math.Round((decimal)(passwAlphanumLength / 2));
@@ -97,8 +92,8 @@ namespace WPA_MVC.Controllers
             passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
 
             //Additional calls because the result was too dummy (too equal-type chars together)
-            passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
-            passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
+            //passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
+            //passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
 
             return View(passwords);
         }

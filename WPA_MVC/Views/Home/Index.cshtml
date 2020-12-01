@@ -1,84 +1,110 @@
 ﻿@model WPA_MVC.Models.Passwords
 @{
     string inputToUse = Model.InputToUse ? "1" : "0";
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Generate Password";
 }
 
 
-<div class="h1">Password Generator</div>
+<div class="h1">Generate a custom random password</div>
 
 <form method="post">
     <div class="row">
-        <div class="col-xs-1 float-left">
-            <input id="rdoUseExisting" type="radio" class="col-xs-2" name="existingPassw" value="1" />
-        </div>
-        <div class="col-xs-11">
-            <label for="rdoUseExisting" class="font-size-normal col-xs-10">Use an existing password (the new password will have the same length and the same symbols)</label>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-1 float-left">
-            <input id="rdoDontUseExisting" type="radio" class="pull-left col-xs-2" name="existingPassw" value="0" />
-        </div>
-        <div class="col-xs-11">
-            <label for="rdoDontUseExisting" class="font-size-normal col-xs-10">Don't use an existing password</label>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12 col-md-6">
+        <div class="col-sm-3 col-md-2">
             <div class="form-group">
-                <input id="txtExistingPassw" type="text" class="form-control" asp-for="InputPassword" value="@Model.InputPassword" />
-            </div>
-            <div class="form-group">
-                <input id="txtNewPassw" type="text" class="form-control" asp-for="OutputPassword" value="@Model.OutputPassword" />
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <select id="selSettings" class="form-control" asp-for="Length">
-                    @{ for (int i = Model.MinLength; i <= Model.MaxLength; i++)
-                        {
-                            if (Model.Length == null && i == Model.MinLength)
+                <div class="input-group mb-1">
+                    <label class="lbl-for-control-form">
+                        Length
+                    </label>
+                    <select id="selSettings" class="form-control" asp-for="Length">
+                        @{ for (int i = Model.MinLength; i <= Model.MaxLength; i++)
                             {
-                                <option class="container-1row-font-size-normal" selected>@i</option>
-                            }
-                            else if (Model.Length != null && i == Int32.Parse(Model.Length))
-                            {
-                                <option class="container-1row-font-size-normal" selected>@i</option>
-                            }
-                            else
-                            {
-                                <option class="container-1row-font-size-normal">@i</option>
+                                if (Model.Length == null && i == Model.MinLength)
+                                {
+                                    <option class="container-1row-font-size-normal" selected>@i</option>
+                                }
+                                else if (Model.Length != null && i == Int32.Parse(Model.Length))
+                                {
+                                    <option class="container-1row-font-size-normal" selected>@i</option>
+                                }
+                                else
+                                {
+                                    <option class="container-1row-font-size-normal">@i</option>
+                                }
                             }
                         }
-                    }
-                </select>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9 col-md-10">
+            <div class="form-group">
+                <label class="lbl-for-control-form">
+                    Pattern Password (if any)
+                </label>
+                <div class="input-group mb-3">
+                    @*<span class="input-group-addon"><i class="glyphicon glyphicon-filter"></i></span>*@
+                    @*<div class="icon-addon addon-lg">*@
+                    @*<span class="with-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </span>*@
+                    <div class="input-group-prepend input-group-icon">
+                        <span class="input-group-text" data-toggle="tooltip" title="Sets length and symbols of the new password">
+                            <span uk-icon="icon: info" ratio="1"></span>
+                        </span>
+                    </div>
+                    <input id="txtExistingPassw" type="text" class="form-control" asp-for="InputPassword" value="@Model.InputPassword" placeholder="Enter the pattern password" />
+                    @*<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email"></label>*@
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="reset" class="btn btn-danger">Reset</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group container-ten-rows">
-                <select id="selSettings" multiple class="form-control ten-rows">
-                    <option class="container-1row-font-size-normal">Include Symbols ( e.g. $%&! )</option>
-                    <option class="container-1row-font-size-normal">Include Numbers ( e.g. 123456 )</option>
-                    <option class="container-1row-font-size-normal">Include Lowercase Characters ( e.g. abcdefgh )</option>
-                    <option class="container-1row-font-size-normal">Include Uppercase Characters ( e.g. ABCDEFGH )</option>
-                    <option class="container-1row-font-size-normal">Exclude Similar Characters ( e.g. i, l, 1, L, o, 0, O )</option>
-                    <option class="container-1row-font-size-normal">Exclude Ambiguous Characters ( { } [ ] ( ) / \ ' " ` ~ , ; : . < > )</option>
-                    <option class="container-1row-font-size-normal">Generate On Your Device ( do NOT send across the Internet )</option>
-                    <option class="container-1row-font-size-normal">Auto-Select ( select the password automatically )</option>
-                    <option class="container-1row-font-size-normal">Save My Preference ( save all the settings above for later use )</option>
-                    <option class="container-1row-font-size-normal">Load My Settings Anywhere - URL to load my settings on other computers quickly</option>
-                </select>
+        <div class="col-sm-12">
+            <label class="lbl-for-control-form">
+                Settings
+            </label>
+            <div class="form-group">
+                <input id="include-symbols" type="checkbox" class="uk-checkbox" /><label for="include-symbols" class="uk-padding-small uk-padding-remove-vertical">Include Symbols ( e.g. $%&! )</label>
+            </div>
+            <div class="form-group">
+                <input id="include-numbers" type="checkbox" class="uk-checkbox" /><label for="include-numbers" class="uk-padding-small uk-padding-remove-vertical">Include Numbers ( e.g. 123456 )</label>
+            </div>
+            <div class="form-group">
+                <input id="include-lowercase" type="checkbox" class="uk-checkbox" /><label for="include-lowercase" class="uk-padding-small uk-padding-remove-vertical">Include Lowercase Characters ( e.g. abcdefgh )</label>
+            </div>
+            <div class="form-group">
+                <input id="include-uppercase" type="checkbox" class="uk-checkbox" /><label for="include-uppercase" class="uk-padding-small uk-padding-remove-vertical">Include Uppercase Characters ( e.g. ABCDEFGH )</label>
+            </div>
+            <div class="form-group">
+                <input id="exclude-similar" type="checkbox" class="uk-checkbox" /><label for="exclude-similar" class="uk-padding-small uk-padding-remove-vertical">Exclude Similar Characters ( e.g. i, l, 1, L, o, 0, O )<</label>
+            </div>
+            <div class="form-group">
+                <input id="exclude-ambiguous" type="checkbox" class="uk-checkbox" /><label for="exclude-ambiguous" class="uk-padding-small uk-padding-remove-vertical">Exclude Ambiguous Characters ( { } [ ] ( ) / \ ' " ` ~ , ; : . < > )</label>
+            </div>
+            <div class="form-group">
+                <input id="generate-on-device" type="checkbox" class="uk-checkbox" /><label for="generate-on-devices" class="uk-padding-small uk-padding-remove-vertical">Generate On Your Device ( do NOT send across the Internet )</label>
+            </div>
+            <div class="form-group">
+                <input id="auto-select" type="checkbox" class="uk-checkbox" /><label for="auto-select" class="uk-padding-small uk-padding-remove-vertical">Auto-Select ( select the password automatically )</label>
+            </div>
+            <div class="form-group">
+                <input id="save-preference" type="checkbox" class="uk-checkbox" /><label for="save-preference" class="uk-padding-small uk-padding-remove-vertical">Save My Preference ( save all the settings above for later use )</label>
+            </div>
+            <div class="form-group">
+                <input id="load-settings-anywhere" type="checkbox" class="uk-checkbox" /><label for="load-settings-anywhere" class="uk-padding-small uk-padding-remove-vertical">Load My Settings Anywhere - URL to load my settings on other computers quickly</label>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
-            <input type="submit" class="btn btn-info" />
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="lbl-for-control-form">Your Password</label>
+                <input id="txtNewPassw" type="text" class="form-control" asp-for="OutputPassword" value="@Model.OutputPassword" />
+            </div>
         </div>
     </div>
 </form>
@@ -94,7 +120,8 @@
             else {
                 $("#rdoDontUseExisting").attr("checked", "checked");
             }
-            console.log(inputToUse);
+
+            $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
 }

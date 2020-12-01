@@ -28,9 +28,13 @@ body {
     margin: 15px;
 }
 
-/* ************* Customs ************* */
+/* ************* Customs BEGIN ************* */
 html {
     font-size: 16px !important;
+}
+
+html, body {
+    height: 100% !important;
 }
 
 .container-ten-rows {
@@ -63,6 +67,200 @@ label {
     float: left !important;
 }
 
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+    /* Tooltip text */
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+        /* Position the tooltip text */
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        /* Fade in tooltip */
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+        /* Tooltip arrow */
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+.lbl-for-control-form {
+    width: 100%;
+    border-bottom: solid 1px;
+}
+
+/* ******* Icons inside input BEGIN ******** */
+span.with-icon {
+    padding: 0.4rem;
+    padding-left: 0.6rem;
+    position: absolute;
+    align-items: center;
+}
+
+i.fas, i.fa {
+    line-height: 3rem !important;
+    color: #0c0 !important;
+    z-index: 99;
+}
+
+input.with-icon {
+    padding-left: 2.5rem;
+    background-color: transparent;
+    z-index: 99;
+}
+    input.with-icon:focus {
+        background-color: transparent;
+        z-index: 99;
+    }
+
+.input-group .input-group-icon, .input-group .input-group-icon span {
+    background-color: transparent;
+    border-right: none;
+}
+
+.input-group .input-group-icon + input {
+    border-left: none;
+}
+    .center-block {
+        float: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+.input-group .icon-addon .form-control {
+    border-radius: 0;
+}
+
+.icon-addon {
+    position: relative;
+    color: #555;
+    display: block;
+}
+
+    .icon-addon:after,
+    .icon-addon:before {
+        display: table;
+        content: " ";
+    }
+
+    .icon-addon:after {
+        clear: both;
+    }
+
+    .icon-addon.addon-md .glyphicon,
+    .icon-addon .glyphicon,
+    .icon-addon.addon-md .fa,
+    .icon-addon .fa {
+        position: absolute;
+        z-index: 2;
+        left: 10px;
+        font-size: 14px;
+        width: 20px;
+        margin-left: -2.5px;
+        text-align: center;
+        padding: 10px 0;
+        top: 1px
+    }
+
+    .icon-addon.addon-lg .form-control {
+        line-height: 1.33;
+        height: 46px;
+        font-size: 18px;
+        padding: 10px 16px 10px 40px;
+    }
+
+    .icon-addon.addon-sm .form-control {
+        height: 30px;
+        padding: 5px 10px 5px 28px;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .icon-addon.addon-lg .fa,
+    .icon-addon.addon-lg .glyphicon {
+        font-size: 18px;
+        margin-left: 0;
+        left: 11px;
+        top: 4px;
+    }
+
+    .icon-addon.addon-md .form-control,
+    .icon-addon .form-control {
+        padding-left: 30px;
+        float: left;
+        font-weight: normal;
+    }
+
+    .icon-addon.addon-sm .fa,
+    .icon-addon.addon-sm .glyphicon {
+        margin-left: 0;
+        font-size: 12px;
+        left: 5px;
+        top: -1px
+    }
+
+    .icon-addon .form-control:focus + .glyphicon,
+    .icon-addon:hover .glyphicon,
+    .icon-addon .form-control:focus + .fa,
+    .icon-addon:hover .fa {
+        color: #2580db;
+    }
+/* ******* Icons inside input END ******** */
+
+/*.h-100 {
+    height: 100% !important;
+}*/
+/*.d-table-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.d-table-row {
+    flex: 1;
+}
+
+.d-table-cell {
+    display: table-cell;
+    display: inline-block; /* or float:left; 
+    text-align: center;
+    padding: 0 15px;
+    width: 100%;
+    height: 100%;
+}
+
+    .d-table-cell > .btn {
+        width: 100%;
+        height: 100%;
+    }*/
+/* ************** Customs END ************** */
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */
@@ -70,3 +268,4 @@ label {
         display: none;
     }
 }
+
