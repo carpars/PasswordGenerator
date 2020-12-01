@@ -9,5 +9,6 @@ namespace WPA_MVC.Infrastructure
     {
         public static readonly int PasswordMinLength = 8;
         public static readonly int PasswordMaxLength = 128;
+        public static readonly string[] Symbols = { "&", "‘", "*", "@", "`", "\\", "{", "}", "[", "]", "^", "}", "]", ")", ":", ",", "$", "=", "!", ">", "<", "–", "{", "[", "(", "(", ")", "%", "|", "+", "#", "“", ";", "/", "~", "_", "?", "." };
     }
 }

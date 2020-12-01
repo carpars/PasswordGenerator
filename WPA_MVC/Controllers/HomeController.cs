@@ -50,7 +50,7 @@ namespace WPA_MVC.Controllers
                 passwLength = Int32.Parse(passwords.Length);
             }                           
             
-            string existingPasswSymbols = passwords.InputPassword != null ? GetSymbols(passwords.InputPassword) : SetSymbols();
+            string existingPasswSymbols = GetSymbols(passwords.InputPassword, Int32.Parse(passwords.Length));
             int passwAlphanumLength = passwLength - existingPasswSymbols.Length;
             // The number of letters will be half of the non-symbol character amount
             int passwAlphaLength = (int)Math.Round((decimal)(passwAlphanumLength / 2));
@@ -91,6 +91,8 @@ namespace WPA_MVC.Controllers
             passwords.OutputPassword = String.Concat(symbols, letters, numbers);            
             passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
 
+            // TODO: fix the problem that chars are not placed ramdomly
+
             //Additional calls because the result was too dummy (too equal-type chars together)
             //passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
             //passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
@@ -106,27 +108,37 @@ namespace WPA_MVC.Controllers
             return rand;
         }
 
-        private static string GetSymbols(string inputString)
+        private static string GetSymbols(string inputString, int length)
         {
             string toReturn = String.Empty;
-            foreach (char inputChar in inputString)
+            if (!String.IsNullOrWhiteSpace(inputString))
             {
-                if (!Char.IsLetter(inputChar) & !Char.IsNumber(inputChar))
+                foreach (char inputChar in inputString)
                 {
-                    toReturn += inputChar.ToString();
+                    if (!Char.IsLetter(inputChar) & !Char.IsNumber(inputChar))
+                    {
+                        toReturn += inputChar.ToString();
+                    }
                 }
             }
+            else
+            {
+                string[] symbols = Constants.Symbols;
+                int symbolsLength = (int)Math.Round((decimal)(length / 3));
 
-            //Console.WriteLine("Total simbols:  " + counter + ", y son: " + toReturn);
+                for (int i = 0; i < symbolsLength; i++)
+                {
+                    Random random = new Random();
+                    // random number
+                    int a = random.Next(0, symbols.Length);
+                    string str = symbols[a];
+                    toReturn += str;
+                }
+            }            
+            
             return toReturn;
         }
-
-        private static string SetSymbols()
-        {
-            // TODO: Complete
-            return ")$=:";       
-        }
-       
+   
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
