@@ -104,12 +104,10 @@ namespace PasswordGeneratorWinForm
             // TODO: fix the problem that chars are not placed ramdomly
 
             //Additional calls because the result was too dummy (too equal-type chars together)
-            //passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
-            //passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
+            outputPassword = RearrangeString(outputPassword);
+            outputPassword = RearrangeString(outputPassword);
 
             this.txtNewPassword.Text = outputPassword;
-
-
         }
 
         private static string RearrangeString(string inputString)
