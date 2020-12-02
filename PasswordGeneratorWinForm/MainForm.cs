@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PasswordGeneratorWinForm.Infrastructure;
 
 namespace PasswordGeneratorWinForm
 {
@@ -25,27 +26,46 @@ namespace PasswordGeneratorWinForm
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }       
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
 
-        private void txtExistingPassw_TextChanged(object sender, EventArgs e)
+        private void btnSubmit_Click(object sender, EventArgs e)
         {
-            string existingPassw = this.txtExistingPassw.Text;
+            string inputPassword = this.txtExistingPassw.Text;
 
-            string outputPassw = String.Empty;
+            string outputPassword = this.txtNewPassword.Text;
 
-            int passwLength = existingPassw.Length;
-            string existingPasswSymbols = GetSymbols(existingPassw);
+            //string length = this.cmbLength.Text;
+            string length = "20";
+
+            int minLength = 8;
+
+            int maxLength = 128;
+
+            int[] settings = { };
+         
+
+            int passwLength = 0;
+            // TODO: Set a User advise if InputToUse == true and InputPassword == null
+            if (!String.IsNullOrWhiteSpace(inputPassword))
+            {
+                passwLength = inputPassword.Length;
+            }
+            else
+            {
+                passwLength = Int32.Parse(length);
+            }
+
+            string existingPasswSymbols = GetSymbols(inputPassword, passwLength);
             int passwAlphanumLength = passwLength - existingPasswSymbols.Length;
             // The number of letters will be half of the non-symbol character amount
             int passwAlphaLength = (int)Math.Round((decimal)(passwAlphanumLength / 2));
             // The number of number will be half of the non-symbol character amount
             int passNumLength = passwAlphanumLength - passwAlphaLength;
-
-            //Console.WriteLine("initialPasswSymbols: " + initialPasswSymbols);
-            //Console.WriteLine("initialPasswSymbols.Length: " + initialPasswSymbols.Length);
-            //Console.WriteLine("passwAlphaLength: " + passwAlphaLength);
-            //Console.WriteLine("passNumLength: " + passNumLength);
-
 
             string symbols = existingPasswSymbols;
             string letters = String.Empty;
@@ -78,15 +98,18 @@ namespace PasswordGeneratorWinForm
                 numbers += str;
             }
 
-            outputPassw = String.Concat(symbols, letters, numbers);
-            //Console.WriteLine("  outputPassw: " + outputPassw);
-            outputPassw = RearrangeString(outputPassw);
+            outputPassword = String.Concat(symbols, letters, numbers);
+            outputPassword = RearrangeString(outputPassword);
+
+            // TODO: fix the problem that chars are not placed ramdomly
 
             //Additional calls because the result was too dummy (too equal-type chars together)
-            outputPassw = RearrangeString(outputPassw);
-            outputPassw = RearrangeString(outputPassw);
+            //passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
+            //passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
 
-            this.txtNewPassword.Text = outputPassw;
+            this.txtNewPassword.Text = outputPassword;
+
+
         }
 
         private static string RearrangeString(string inputString)
@@ -97,18 +120,34 @@ namespace PasswordGeneratorWinForm
             return rand;
         }
 
-        private static string GetSymbols(string inputString)
+        private static string GetSymbols(string inputString, int length)
         {
             string toReturn = String.Empty;
-            foreach (char inputChar in inputString)
+            if (!String.IsNullOrWhiteSpace(inputString))
             {
-                if (!Char.IsLetter(inputChar) & !Char.IsNumber(inputChar))
+                foreach (char inputChar in inputString)
                 {
-                    toReturn += inputChar.ToString();
+                    if (!Char.IsLetter(inputChar) & !Char.IsNumber(inputChar))
+                    {
+                        toReturn += inputChar.ToString();
+                    }
+                }
+            }
+            else
+            {
+                string[] symbols = Constants.Symbols;
+                int symbolsLength = (int)Math.Round((decimal)(length / 3));
+
+                for (int i = 0; i < symbolsLength; i++)
+                {
+                    Random random = new Random();
+                    // random number
+                    int a = random.Next(0, symbols.Length);
+                    string str = symbols[a];
+                    toReturn += str;
                 }
             }
 
-            //Console.WriteLine("Total simbols:  " + counter + ", y son: " + toReturn);
             return toReturn;
         }
     }
