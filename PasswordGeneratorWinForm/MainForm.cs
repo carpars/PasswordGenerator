@@ -71,10 +71,12 @@ namespace PasswordGeneratorWinForm
             string letters = String.Empty;
             string numbers = String.Empty;
 
+            Random random = new Random();
+
             // Generate letters
             for (int i = 0; i < passwAlphaLength; i++)
             {
-                Random random = new Random();
+                
                 // random lowercase letter
                 int a = random.Next(0, 26);
                 char ch = (char)('a' + a);
@@ -90,8 +92,7 @@ namespace PasswordGeneratorWinForm
 
             // Generate numbers
             for (int i = 0; i < passNumLength; i++)
-            {
-                Random random = new Random();
+            {                
                 // random number
                 int a = random.Next(0, 9);
                 string str = a.ToString();
@@ -99,23 +100,20 @@ namespace PasswordGeneratorWinForm
             }
 
             outputPassword = String.Concat(symbols, letters, numbers);
-            outputPassword = RearrangeString(outputPassword);
-
-            // TODO: fix the problem that chars are not placed ramdomly
-
-            //Additional calls because the result was too dummy (too equal-type chars together)
-            outputPassword = RearrangeString(outputPassword);
-            outputPassword = RearrangeString(outputPassword);
+            outputPassword = RearrangeString(outputPassword);           
 
             this.txtNewPassword.Text = outputPassword;
         }
 
         private static string RearrangeString(string inputString)
         {
+            string toReturn = null;
             Random random = new Random();
-            string rand = new string(inputString.
-                OrderBy(s => (random.Next(2) % 2) == 0).ToArray());
-            return rand;
+
+            toReturn = new string(inputString.
+                OrderBy(s => (random.Next(inputString.Length))).ToArray());
+      
+            return toReturn;
         }
 
         private static string GetSymbols(string inputString, int length)

@@ -91,21 +91,18 @@ namespace WPA_MVC.Controllers
             passwords.OutputPassword = String.Concat(symbols, letters, numbers);            
             passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
 
-            // TODO: fix the problem that chars are not placed ramdomly
-
-            //Additional calls because the result was too dummy (too equal-type chars together)
-            //passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
-            //passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
-
             return View(passwords);
         }
 
         private static string RearrangeString(string inputString)
         {
+            string toReturn = null;
             Random random = new Random();
-            string rand = new string(inputString.
-                OrderBy(s => (random.Next(2) % 2) == 0).ToArray());
-            return rand;
+
+            toReturn = new string(inputString.
+                OrderBy(s => (random.Next(inputString.Length))).ToArray());
+
+            return toReturn;
         }
 
         private static string GetSymbols(string inputString, int length)
