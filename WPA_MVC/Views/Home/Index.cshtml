@@ -127,15 +127,15 @@
             });
             // PREBA para el try-catch: generar excepcion:
             var ajaxRequest = new XMLHttpRequest();
-            ajaxRequest.open("GET", "erw2", false);
+            ajaxRequest.open("GET", "dsfsdf" , false);  // url = "/Home/About";
             ajaxRequest.send(); // = XMLHttpRequest(GET, "sdfdf", false);
             if (ajaxRequest.status == 404) {
-                throw "No hay respuesta de ajax";
+                throw "No hay respuesta Ajax";
             }
-            var prueba = "" / 45 / "";
-            if (isNaN(prueba)) {
-                throw "no es un numero";
-            }
+            //var prueba = "" / 45 / "";
+            //if (isNaN(prueba)) {
+            //    throw "no es un numero";
+            //}
         }
         catch (exception) {
             /* Handle any exceptions here. 
