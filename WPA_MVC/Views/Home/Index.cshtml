@@ -112,17 +112,37 @@
 
 @section Scripts {
     <script>
-        let inputToUse = "@inputToUse";
+        try {
+            let inputToUse = "@inputToUse";
 
-        $(document).ready(function(){
-            if (inputToUse == "1") {
-                $("#rdoUseExisting").attr("checked", "checked");
-            }
-            else {
-                $("#rdoDontUseExisting").attr("checked", "checked");
-            }
+            $(document).ready(function () {
+                if (inputToUse == "1") {
+                    $("#rdoUseExisting").attr("checked", "checked");
+                }
+                else {
+                    $("#rdoDontUseExisting").attr("checked", "checked");
+                }
 
-            $('[data-toggle="tooltip"]').tooltip();
-        });
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+            // PREBA para el try-catch: generar excepcion:
+            var ajaxRequest = new XMLHttpRequest();
+            ajaxRequest.open("GET", "erw2", false);
+            ajaxRequest.send(); // = XMLHttpRequest(GET, "sdfdf", false);
+            if (ajaxRequest.status == 404) {
+                throw "No hay respuesta de ajax";
+            }
+            var prueba = "" / 45 / "";
+            if (isNaN(prueba)) {
+                throw "no es un numero";
+            }
+        }
+        catch (exception) {
+            /* Handle any exceptions here. 
+               This example displays the exception to the user */
+            alert(exception);
+        }
+
+
     </script>
 }
