@@ -110,6 +110,7 @@ namespace PasswordGeneratorWinForm
             string toReturn = null;
             Random random = new Random();
 
+            // TODO: Esta línea no reordena bien, aunque en el proyecto PWA_MVC sí
             toReturn = new string(inputString.
                 OrderBy(s => (random.Next(inputString.Length))).ToArray());
       

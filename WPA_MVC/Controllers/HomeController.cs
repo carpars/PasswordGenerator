@@ -100,7 +100,7 @@ namespace WPA_MVC.Controllers
             Random random = new Random();
 
             toReturn = new string(inputString.
-                OrderBy(s => (random.Next(inputString.Length))).ToArray());
+                OrderBy(s => (random.Next(inputString.Length))).ToArray());                      
 
             return toReturn;
         }
