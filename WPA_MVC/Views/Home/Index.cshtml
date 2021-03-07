@@ -12,23 +12,6 @@
         las &lt;label&gt; de los Settings asociarlas a su control
     </li>
     <li>
-        Copiar al portapapeles desde JS (desde Controller no se puede en ASP). Probado:
-        <ul>
-            <li>
-                hacer una div y poner el texto resultado oculto y seleccionar pero no recibe el foco.
-            </li>
-            <li>
-                opacidad del input resultado = 0 y poner foco y copiar, pero no recibe foco
-            </li>
-            <li>
-                cambiar color texto dentro del input resultado para hacerlo transparente. No PROBADO SUFICIENTE
-            </li>
-        </ul>
-    </li>
-    <li>
-        Copiar al portapapeles desde JS (desde Controller no se puede en ASP)
-    </li>
-    <li>
         Terminar de implementar todos los settings
     </li>
 </ol>
@@ -41,7 +24,7 @@
                 <label class="lbl-for-control-form">
                     Length
                 </label>
-                <select id="selSettings" class="form-control" asp-for="Length">
+                <select id="length" class="form-control" asp-for="Length">
                     @{
                         int length = !String.IsNullOrWhiteSpace(Model.Length) ? Int32.Parse(Model.Length) : 0;
                         //int length = Model.Length;
@@ -74,11 +57,6 @@
                 Pattern Password (if any)
             </label>
             <div class="input-group mb-3">
-                @*<span class="input-group-addon"><i class="glyphicon glyphicon-filter"></i></span>*@
-                @*<div class="icon-addon addon-lg">*@
-                @*<span class="with-icon">
-                        <i class="fas fa-info-circle"></i>
-                    </span>*@
                 <div class="input-group-prepend input-group-icon">
                     <span class="input-group-text" data-toggle="tooltip" title="Sets length and symbols of the new password">
                         <span uk-icon="icon: info" ratio="1"></span>
@@ -96,15 +74,29 @@
 </div>
 <div class="row">
     <div class="col-sm-12">
+        <div class="form-group">
+            <div class="input-group mb-1">
+                <label class="lbl-for-control-form">
+                    Your Password
+                </label>
+                <div class="input-group mb-2">
+                    <input id="txt-new-passw" type="text" class="form-control" asp-for="OutputPassword" value="@Model.OutputPassword" />
+                    <div class="input-group-append">
+                        <button id="btn-copy" class="btn btn-primary">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
         <label class="lbl-for-control-form">
             Settings
         </label>
         <div class="form-group">
             <input id="save-preferences" type="checkbox" data-toggle="toggle" />
             <label for="save-preferences">Save My Preferences ( save all the settings below for later use )</label>
-                
-                
-            
         </div>
         <div class="form-group">
             <label>
@@ -174,20 +166,26 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-12">
-        <div class="form-group">
-            @*TODO: borders of the next imput, equal radio than previous inputs *@
-            <label class="lbl-for-control-form">Your Password</label>
-            <input id="txt-new-passw" type="text" class="form-control" asp-for="OutputPassword" value="@Model.OutputPassword" />
-        </div>
-    </div>
-</div>
 @*</form>*@
 
 
 @section Scripts {
     <script>
+        let passwordRequestOnLoad = null;
+
+        let passwordRequest = {
+            inputPassword: '',
+            length: '',
+            settings:
+            {
+                hidePassword: '',
+                includeLowercase: '',
+                includeUppercase: '',
+                autoCopyToClipboard: '',
+                loadSettingsAnywhere: ''
+            }
+        };
+
          try
          {
              //let passwordToRequest = {
@@ -212,8 +210,38 @@
 
              $(document).ready(function() {
                  $("#btn-submit").on('click', SubmitPasswordRequestAjax);
+                 $("#btn-copy").on('click', function (ev) {
+                     CopyToClipboard($("#txt-new-passw").val());
+                 });
                  //$("#hide-password-radio").attr("checked", "checked");
                  $('[data-toggle="tooltip"]').tooltip();
+
+                 // TODO: check why with these Bootstrap 5 switchers, <label>
+                 //     doesn0t handle its input with 'for'
+
+                 $("label[for='save-preferences'").on('click', function (ev) {                     
+                     $("#save-preferences").toggle();
+                 });
+
+                 let loadSettingsAnywhere = localStorage.getItem("loadSettingsAnywhere");
+                 if (loadSettingsAnywhere) {
+                     LoadData();
+                 }
+
+                 SaveData(function () {
+                     passwordRequestOnLoad = passwordRequest;
+                 });
+
+                 // TODO: completar esto:
+                 //window.on('neforeUnload', function (ev) {
+                 //    alert("Before unload");
+                 //    if (DataChanged) {
+                 //        // PREGUNTAR SI QUIERE ABANDONAR??
+                 //        if ($("#save-preferences").is(":checked")) {
+                 //            SaveData();
+                 //        }
+                 //    }
+                 //});
              });
 
              function SubmitPasswordRequestAjax()
@@ -231,21 +259,12 @@
                  if (ajaxRequest.status == 200) {
                      alert(data.outputPasword);
                  }*@
-                 let passwordRequest = {
-                     inputPassword: $("#txtExistingPassw").val(),
-                     length: $("#selSettings").val(),                    
-                     settings:
-                     {
-                         hidePassword: $("#hide-password").is(":checked"),
-                         includeLowercase: $("#include-lowercase").is(":checked"),
-                         includeUppercase: $("#include-uppercase").is(":checked"),
-                         autoCopyToClipboard: $("#auto-copy-to-clipboard").is(":checked"),
-                         loadSettingsAnywhere: $("#load-settings-anywhere").is(":checked")
-                     }
-                 };
+                 if (DataChanged) {
+                     SaveData();
+                 }
 
                  //let passwordRequest = JSON.stringify(request);
-                 debugger;
+
                  let url = '@Url.Action("GetResult", "Home")';
 
                  $.ajax({
@@ -254,27 +273,12 @@
                      //contentType: 'json',
                      data: passwordRequest,
                      success: function (data) {
-                         AjaxSuccess(data);                                                  
-                         //AjaxPostObjectSuccess(data, selectorId);
+                         AjaxSuccess(data);
                      },
                      error: function (jqXHR, textStatus, errorThrown) {
-                         alert("FAIL");
-                         //AjaxPostObjectError(jqXHR, textStatus, errorThrown);
+                         AjaxError(jqXHR, textStatus, errorThrown);
                      }
                  });
-
-                 @*$.ajax({
-                     type: "POST",
-                     url: '@Url.Action("GetResult")',
-                     //contentType: "application/json; charset=utf-8", //'application/json; charset=utf-8';
-                     data: passwordRequest,
-                     success: function (data) {
-                         alert("SUCC");
-                     }
-                     //dataType: "json",
-                 }).fail(function() {
-                     alert("FAIL");
-                 });*@
 
                  @*// TODO: ver por que error Failed
                  $.post('@Url.Action("GetResult")', data, function(data) {
@@ -286,13 +290,10 @@
                  .fail(function() {
                      alert("FAIL");
                  });*@
-
-
-                 // TODO: Remove for visible password
-                 $("#txtNewPassw").focus();
              }
 
              function AjaxSuccess(data) {
+                 debugger;
                  if ($("#hide-password").is(":checked")) {
                      $("#txt-new-passw").css("opacity", "0");
                  }
@@ -300,11 +301,13 @@
                      $("#txt-new-passw").css("opacity", "1");
                  }
 
+                 // TODO: Remove for hidden password
                  if ($("#auto-select").is(":checked")) {
                      $("#txt-new-passw").focus();
-                 }                 
-                 
+                 }
+
                  $("#txt-new-passw").val(data.outputPassword);
+
                  CopyToClipboard(data.outputPassword);
              }
 
@@ -314,6 +317,155 @@
                  $temp.val(textToCopy).select();
                  document.execCommand("copy");
                  $temp.remove();
+             }
+
+             function LoadData(SaveData) {
+                 // Load the control data
+                 /*$("#txtExistingPassw").val(localStorage.getItem("inputPassword"));*/
+                 $("#length").val(localStorage.getItem("length"));
+
+                 // TODO: cargar del web storage recorriendo
+                 //     autom. las props del objetoç
+
+                     if ($("#save-preferences").is(":checked") != localStorage.getItem("savePreferences")) {
+                         $("#save-preferences").toggle();
+                     }
+                     if ($("#hide-password").is(":checked") != localStorage.getItem("hidePassword")) {
+                         $("#hide-password").toggle();
+                     }
+                     if ($("#include-symbols").is(":checked") != localStorage.getItem("includeSymbols")) {
+                         $("#include-symbols").toggle();
+                     }
+                     if ($("#include-numbers").is(":checked") != localStorage.getItem("includeNumbers")) {
+                         $("#include-numbers").toggle();
+                     }
+                     if ($("#include-lowercase").is(":checked") != localStorage.getItem("includeLowercase")) {
+                         $("#include-lowercase").toggle();
+                     }
+                     if ($("#include-uppercase").is(":checked") != localStorage.getItem("includeUppercase")) {
+                         $("#include-uppercase").toggle();
+                     }
+                     if ($("#exclude-similar").is(":checked") != localStorage.getItem("excludeSimilar")) {
+                         $("#exclude-similar").toggle();
+                     }
+                     if ($("#exclude-ambiguous").is(":checked") != localStorage.getItem("excludeAmbiguous")) {
+                         $("#exclude-ambiguous").toggle();
+                     }
+                     if ($("#generate-on-device").is(":checked") != localStorage.getItem("generateOnDevice")) {
+                         $("#generate-on-device").toggle();
+                     }
+                     if ($("#auto-select").is(":checked") != localStorage.getItem("autoSelect")) {
+                         $("#auto-select").toggle();
+                     }
+                     if ($("#auto-copy-to-clipboard").is(":checked") != localStorage.getItem("autoCopyToClipboard")) {
+                         $("auto-copy-to-clipboard").toggle();
+                     }
+                     if ($("#load-settings-anywhere").is(":checked") != localStorage.getItem("loadSettingsAnywhere")) {
+                         $("#load-settings-anywhere").toggle();
+                     }
+
+
+                 // Load the variable
+                 passwordRequest = {
+                     inputPassword: $("#txtExistingPassw").val(),
+                     length: $("#length").val(),
+                     settings:
+                     {
+                         savePreferences: $("#save-preferences").is(":checked"),
+                         hidePassword: $("#hide-password").is(":checked"),
+                         includeSymbols: $("#include-symbols").is(":checked"),
+                         includeNumbers: $("#include-numbers").is(":checked"),
+                         includeLowercase: $("#include-lowercase").is(":checked"),
+                         includeUppercase: $("#include-uppercase").is(":checked"),
+                         excludeSimilar: $("#exclude-similar").is(":checked"),
+                         excludeAmbiguous: $("#exclude-ambiguous").is(":checked"),
+                         generateOnDevice: $("#generate-on-device").is(":checked"),
+                         autoSelect: $("#auto-select").is(":checked"),
+                         autoCopyToClipboard: $("#auto-copy-to-clipboard").is(":checked"),
+                         loadSettingsAnywhere: $("#load-settings-anywhere").is(":checked")
+                     }
+                 };
+             }
+
+             function SaveData() {
+                 if ($("#save-preferences").is(":checked")) {
+                     // Save the preferences
+
+                     // TODO: guardar en web storage recorriendo
+                     //     autom. las props del objeto
+                     if ($("#length").val() != localStorage.getItem("length")) {
+                         localStorage.setItem("length", $("#length").val());                         
+                     }
+                     if ($("#save-preferences").is(":checked") != localStorage.getItem("savePreferences")) {
+                         localStorage.setItem("savePreferences", $("#save-preferences").is(":checked"));
+                     }
+                     if ($("#hide-password").is(":checked") != localStorage.getItem("hidePassword")) {
+                         localStorage.setItem("hidePassword", $("#hide-password").is(":checked"));
+                     }
+                     if ($("#include-symbols").is(":checked") != localStorage.getItem("includeSymbols")) {
+                         localStorage.setItem("includeSymbols", $("#include-symbols").is(":checked"));
+                     }
+                     if ($("#include-numbers").is(":checked") != localStorage.getItem("includeNumbers")) {
+                         localStorage.setItem("includeNumbers", $("#include-numbers").is(":checked"));
+                     }
+                     if ($("#include-lowercase").is(":checked") != localStorage.getItem("includeLowercase")) {
+                         localStorage.setItem("includeLowercase", $("#include-lowercase").is(":checked"));
+                     }
+                     if ($("#include-uppercase").is(":checked") != localStorage.getItem("includeUppercase")) {
+                         localStorage.setItem("includeUppercase", $("#include-uppercase").is(":checked"));
+                     }
+                     if ($("#exclude-similar").is(":checked") != localStorage.getItem("excludeSimilar")) {
+                         localStorage.setItem("excludeSimilar", $("#exclude-similar").is(":checked"));
+                     }
+                     if ($("#exclude-ambiguous").is(":checked") != localStorage.getItem("excludeAmbiguous")) {
+                         localStorage.setItem("excludeAmbiguous", $("#exclude-ambiguous").is(":checked"));
+                     }
+                     if ($("#generate-on-device").is(":checked") != localStorage.getItem("generateOnDevice")) {
+                         localStorage.setItem("generateOnDevice", $("#generate-on-device").is(":checked"));
+                     }
+                     if ($("#auto-select").is(":checked") != localStorage.getItem("autoSelect")) {
+                         localStorage.setItem("autoSelect", $("#auto-select").is(":checked"));
+                     }
+                     if ($("#auto-copy-to-clipboard").is(":checked") != localStorage.getItem("autoCopyToClipboard")) {
+                         localStorage.setItem("autoCopyToClipboard", $("#auto-copy-to-clipboard").is(":checked"));
+                     }
+                     if ($("#load-settings-anywhere").is(":checked") != localStorage.getItem("loadSettingsAnywhere")) {
+                         localStorage.setItem("loadSettingsAnywhere", $("#load-settings-anywhere").is(":checked"));
+                     }
+                 }
+
+                 // Save the variable
+                 passwordRequest = {
+                     inputPassword: $("#txtExistingPassw").val(),
+                     length: $("#length").val(),
+                     settings:
+                     {
+                         savePreferences: $("#save-preferences").is(":checked"),
+                         hidePassword: $("#hide-password").is(":checked"),
+                         includeSymbols: $("#hide-symbols").is(":checked"),
+                         includeNumbers: $("#hide-numbers").is(":checked"),
+                         includeLowercase: $("#include-lowercase").is(":checked"),
+                         includeUppercase: $("#include-uppercase").is(":checked"),
+                         excludeSimilar: $("#exclude-similar").is(":checked"),
+                         excludeAmbiguous: $("#exclude-ambiguous").is(":checked"),
+                         generateOnDevice: $("#generate-on-device").is(":checked"),
+                         autoSelect: $("#ato-select").is(":checked"),
+                         autoCopyToClipboard: $("#auto-copy-to-clipboard").is(":checked"),
+                         loadSettingsAnywhere: $("#load-settings-anywhere").is(":checked")
+                     }
+                 };
+             }
+
+             function DataChanged() {
+                 if (JSON.stringify(passwordRequest) != JSON.stringify(passwordRequestOnLoad)) {
+                     return true;
+                 } else {
+                     return false;
+                 }
+             }
+
+             function AjaxError(jqXHR, textStatus, errorThrown) {
+                 alert("Ajax error..");
              }
          }
          catch (exception)

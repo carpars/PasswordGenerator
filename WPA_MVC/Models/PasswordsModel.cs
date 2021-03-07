@@ -28,6 +28,7 @@ namespace WPA_MVC.Models
     }
 
     public class Settings {
+        public bool SavePreferences { get; set; }
         public bool HidePassword { get; set; }
         public bool IncludeSymbols { get; set; }
         public bool IncludeNumbers { get; set; }
@@ -43,6 +44,8 @@ namespace WPA_MVC.Models
 
     public class SettingsView
     {
+        public string SavePreferences { get; set; }
+        public string HidePassword { get; set; }
         public string IncludeSymbols { get; set; }
         public string IncludeNumbers { get; set; }
         public string IncludeLowercase { get; set; }
