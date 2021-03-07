@@ -28,7 +28,7 @@ body {
     margin: 15px;
 }
 
-/* ************* Customs BEGIN ************* */
+/* ************************** Customs BEGIN ************************** */
 html {
     font-size: 16px !important;
 }
@@ -117,7 +117,7 @@ label {
     border-bottom: solid 1px;
 }
 
-/* ******* Icons inside input BEGIN ******** */
+/* ---------- Icons inside input BEGIN ---------- */
 span.with-icon {
     padding: 0.4rem;
     padding-left: 0.6rem;
@@ -233,7 +233,66 @@ input.with-icon {
     .icon-addon:hover .fa {
         color: #2580db;
     }
-/* ******* Icons inside input END ******** */
+/* ---------- Icons inside input END ---------- */
+
+/*.custom-control-label::before {
+    width: 3.5rem !important;
+    height: 2rem !important;
+}
+.custom-control-label::after {
+    width: 2rem !important;
+    height: 2rem !important;
+}
+*/
+/*.bg-color-black {
+    color: black;
+}
+*/
+
+/* Agregando las referncias 
+    
+    <link href="~/lib/bootstrap/css/bootstrap-toggle.css" rel="stylesheet" />
+    <script src="~/lib/bootstrap/js/bootstrap-toggle.js"></script>
+
+    no funcionaba optimo esteticamente. Estos estilos son copiados de pag. ejemplo: https://www.bootstraptoggle.com/#usage */
+
+
+.toggle-group span.toggle-handle.btn {
+    border: 1px solid transparent;
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;    
+}
+
+.toggle-group::after {
+    padding-right: 3rem;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.btn:active, .btn.active {
+    background-image: none;
+    outline: 0;
+    -webkit-box-shadow: inset 0 3px 5px*/ rgba(0,0,0,.125);
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);    
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #428bca;
+    /*border-color: #357ebd;*/
+}
+
+.toggle.btn {
+    margin-right: 0.5rem;
+}
+
+
+
 
 /*.h-100 {
     height: 100% !important;
@@ -260,12 +319,12 @@ input.with-icon {
         width: 100%;
         height: 100%;
     }*/
-/* ************** Customs END ************** */
+/* ************************** Customs END ************************** */
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */
     .carousel-caption {
-        display: none;
+            display: none;
+        }
     }
-}
 

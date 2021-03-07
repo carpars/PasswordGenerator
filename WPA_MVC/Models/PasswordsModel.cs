@@ -5,14 +5,53 @@ using System.Threading.Tasks;
 
 namespace WPA_MVC.Models
 {
-    public class Passwords
+    public class Password
     {
-        public bool InputToUse { get; set; }
+        // TODO: hacer bien, tipos para la vista en clase diferente (esta es usada 
+        //  en controller y no deben ser strings        
         public string InputPassword { get; set; }
         public string OutputPassword { get; set; }
         public string Length { get; set; }
         public int MinLength { get; set; }
         public int MaxLength { get; set; }
-        public string Settings { get; set; }
+        public Settings Settings { get; set; }
+    }
+
+    public class PasswordView
+    {
+        // TODO: hacer bien, tipos para la vista en clase diferente (esta es usada 
+        //  en controller y no deben ser strings        
+        public string InputPassword { get; set; }
+        public string OutputPassword { get; set; }
+        public string Length { get; set; }        
+        public SettingsView Settings { get; set; }        
+    }
+
+    public class Settings {
+        public bool HidePassword { get; set; }
+        public bool IncludeSymbols { get; set; }
+        public bool IncludeNumbers { get; set; }
+        public bool IncludeLowercase { get; set; }
+        public bool IncludeUppercase { get; set; }
+        public bool ExcludeSimilar { get; set; }
+        public bool ExcludeAmbiguous { get; set; }
+        public bool GenerateOnDevice { get; set; }
+        public bool AutoSelect { get; set; }
+        public bool AutoCopyToClipboard { get; set; }
+        public bool LoadSettingsAnywhere { get; set; }
+    }
+
+    public class SettingsView
+    {
+        public string IncludeSymbols { get; set; }
+        public string IncludeNumbers { get; set; }
+        public string IncludeLowercase { get; set; }
+        public string IncludeUppercase { get; set; }
+        public string ExcludeSimilar { get; set; }
+        public string ExcludeAmbiguous { get; set; }
+        public string GenerateOnDevice { get; set; }
+        public string AutoSelect { get; set; }
+        public string AutoCopyToClipboard { get; set; }
+        public string LoadSettingsAnywhere { get; set; }
     }
 }

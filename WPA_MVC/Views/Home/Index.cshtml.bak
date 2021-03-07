@@ -16,7 +16,7 @@
             <label for="rdoUseExisting" class="font-size-normal col-xs-10">Use an existing password (the new password will have the same length and the same symbols)</label>
         </div>
     </div>
-    <div class="row">
+    <div class="row"> 
         <div class="col-xs-1 float-left">
             <input id="rdoDontUseExisting" type="radio" class="pull-left col-xs-2" name="existingPassw" value="0" />
         </div>

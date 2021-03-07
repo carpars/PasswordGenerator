@@ -1,148 +1,326 @@
-﻿@model WPA_MVC.Models.Passwords
+﻿@model WPA_MVC.Models.Password
 @{
-    string inputToUse = Model.InputToUse ? "1" : "0";
+    //string inputToUse = Model.InputToUse ? "1" : "0";
     ViewData["Title"] = "Generate Password";
 }
 
 
 <div class="h1">Generate a custom random password</div>
+<h4>PENDIENTE:</h4>
+<ol>
+    <li>
+        las &lt;label&gt; de los Settings asociarlas a su control
+    </li>
+    <li>
+        Copiar al portapapeles desde JS (desde Controller no se puede en ASP). Probado:
+        <ul>
+            <li>
+                hacer una div y poner el texto resultado oculto y seleccionar pero no recibe el foco.
+            </li>
+            <li>
+                opacidad del input resultado = 0 y poner foco y copiar, pero no recibe foco
+            </li>
+            <li>
+                cambiar color texto dentro del input resultado para hacerlo transparente. No PROBADO SUFICIENTE
+            </li>
+        </ul>
+    </li>
+    <li>
+        Copiar al portapapeles desde JS (desde Controller no se puede en ASP)
+    </li>
+    <li>
+        Terminar de implementar todos los settings
+    </li>
+</ol>
 
-<form method="post">
-    <div class="row">
-        <div class="col-sm-3 col-md-2">
-            <div class="form-group">
-                <div class="input-group mb-1">
-                    <label class="lbl-for-control-form">
-                        Length
-                    </label>
-                    <select id="selSettings" class="form-control" asp-for="Length">
-                        @{ for (int i = Model.MinLength; i <= Model.MaxLength; i++)
+@*<form method="post">*@
+<div class="row">
+    <div class="col-sm-3 col-md-2">
+        <div class="form-group">
+            <div class="input-group mb-1">
+                <label class="lbl-for-control-form">
+                    Length
+                </label>
+                <select id="selSettings" class="form-control" asp-for="Length">
+                    @{
+                        int length = !String.IsNullOrWhiteSpace(Model.Length) ? Int32.Parse(Model.Length) : 0;
+                        //int length = Model.Length;
+                        int minLength = Model.MinLength;
+                        int maxLength = Model.MaxLength;
+
+                        for (int i = minLength; i <= maxLength; i++)
+                        {
+                            if (length == 0 && i == minLength)
                             {
-                                if (Model.Length == null && i == Model.MinLength)
-                                {
-                                    <option class="container-1row-font-size-normal" selected>@i</option>
-                                }
-                                else if (Model.Length != null && i == Int32.Parse(Model.Length))
-                                {
-                                    <option class="container-1row-font-size-normal" selected>@i</option>
-                                }
-                                else
-                                {
-                                    <option class="container-1row-font-size-normal">@i</option>
-                                }
+                                <option class="container-1row-font-size-normal" selected>@i</option>
+                            }
+                            else if (length != 0 && i == length)
+                            {
+                                <option class="container-1row-font-size-normal" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option class="container-1row-font-size-normal">@i</option>
                             }
                         }
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-9 col-md-10">
-            <div class="form-group">
-                <label class="lbl-for-control-form">
-                    Pattern Password (if any)
-                </label>
-                <div class="input-group mb-3">
-                    @*<span class="input-group-addon"><i class="glyphicon glyphicon-filter"></i></span>*@
-                    @*<div class="icon-addon addon-lg">*@
-                    @*<span class="with-icon">
-                            <i class="fas fa-info-circle"></i>
-                        </span>*@
-                    <div class="input-group-prepend input-group-icon">
-                        <span class="input-group-text" data-toggle="tooltip" title="Sets length and symbols of the new password">
-                            <span uk-icon="icon: info" ratio="1"></span>
-                        </span>
-                    </div>
-                    <input id="txtExistingPassw" type="text" class="form-control" asp-for="InputPassword" value="@Model.InputPassword" placeholder="Enter the pattern password" />
-                    @*<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email"></label>*@
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="reset" class="btn btn-danger">Reset</button>
-                    </div>
-                </div>
+                    }
+                </select>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-12">
+    <div class="col-sm-9 col-md-10">
+        <div class="form-group">
             <label class="lbl-for-control-form">
-                Settings
+                Pattern Password (if any)
             </label>
-            <div class="form-group">
-                <input id="include-symbols" type="checkbox" class="uk-checkbox" /><label for="include-symbols" class="uk-padding-small uk-padding-remove-vertical">Include Symbols ( e.g. $%&! )</label>
-            </div>
-            <div class="form-group">
-                <input id="include-numbers" type="checkbox" class="uk-checkbox" /><label for="include-numbers" class="uk-padding-small uk-padding-remove-vertical">Include Numbers ( e.g. 123456 )</label>
-            </div>
-            <div class="form-group">
-                <input id="include-lowercase" type="checkbox" class="uk-checkbox" /><label for="include-lowercase" class="uk-padding-small uk-padding-remove-vertical">Include Lowercase Characters ( e.g. abcdefgh )</label>
-            </div>
-            <div class="form-group">
-                <input id="include-uppercase" type="checkbox" class="uk-checkbox" /><label for="include-uppercase" class="uk-padding-small uk-padding-remove-vertical">Include Uppercase Characters ( e.g. ABCDEFGH )</label>
-            </div>
-            <div class="form-group">
-                <input id="exclude-similar" type="checkbox" class="uk-checkbox" /><label for="exclude-similar" class="uk-padding-small uk-padding-remove-vertical">Exclude Similar Characters ( e.g. i, l, 1, L, o, 0, O )<</label>
-            </div>
-            <div class="form-group">
-                <input id="exclude-ambiguous" type="checkbox" class="uk-checkbox" /><label for="exclude-ambiguous" class="uk-padding-small uk-padding-remove-vertical">Exclude Ambiguous Characters ( { } [ ] ( ) / \ ' " ` ~ , ; : . < > )</label>
-            </div>
-            <div class="form-group">
-                <input id="generate-on-device" type="checkbox" class="uk-checkbox" /><label for="generate-on-devices" class="uk-padding-small uk-padding-remove-vertical">Generate On Your Device ( do NOT send across the Internet )</label>
-            </div>
-            <div class="form-group">
-                <input id="auto-select" type="checkbox" class="uk-checkbox" /><label for="auto-select" class="uk-padding-small uk-padding-remove-vertical">Auto-Select ( select the password automatically )</label>
-            </div>
-            <div class="form-group">
-                <input id="save-preference" type="checkbox" class="uk-checkbox" /><label for="save-preference" class="uk-padding-small uk-padding-remove-vertical">Save My Preference ( save all the settings above for later use )</label>
-            </div>
-            <div class="form-group">
-                <input id="load-settings-anywhere" type="checkbox" class="uk-checkbox" /><label for="load-settings-anywhere" class="uk-padding-small uk-padding-remove-vertical">Load My Settings Anywhere - URL to load my settings on other computers quickly</label>
+            <div class="input-group mb-3">
+                @*<span class="input-group-addon"><i class="glyphicon glyphicon-filter"></i></span>*@
+                @*<div class="icon-addon addon-lg">*@
+                @*<span class="with-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </span>*@
+                <div class="input-group-prepend input-group-icon">
+                    <span class="input-group-text" data-toggle="tooltip" title="Sets length and symbols of the new password">
+                        <span uk-icon="icon: info" ratio="1"></span>
+                    </span>
+                </div>
+                <input id="txtExistingPassw" type="text" class="form-control" asp-for="InputPassword" value="@Model.InputPassword" placeholder="Enter the pattern password" />
+                @*<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email"></label>*@
+                <div class="input-group-append">
+                    <button id="btn-submit" class="btn btn-primary">Submit</button>
+                    <button type="reset" class="btn btn-danger">Reset</button>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="form-group">
-                @*TODO: borders of the next imput, equal radio than previous inputs *@ 
-                <label class="lbl-for-control-form">Your Password</label>
-                <input id="txtNewPassw" type="text" class="form-control" asp-for="OutputPassword" value="@Model.OutputPassword" />
-            </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <label class="lbl-for-control-form">
+            Settings
+        </label>
+        <div class="form-group">
+            <input id="save-preferences" type="checkbox" data-toggle="toggle" />
+            <label for="save-preferences">Save My Preferences ( save all the settings below for later use )</label>
+                
+                
+            
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="hide-password" type="checkbox" data-toggle="toggle" />
+                Hide password
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="auto-copy-to-clipboard" type="checkbox" data-toggle="toggle" />
+                Auto-Copy to Clipboard ( copy the password automatically )
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="include-symbols" type="checkbox" data-toggle="toggle" />
+                Include Symbols ( e.g. $%&! )
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="include-numbers" type="checkbox" data-toggle="toggle" />
+                Include Numbers ( e.g. 123456 )
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="include-lowercase" type="checkbox" data-toggle="toggle" />
+                Include Lowercase Characters ( e.g. abcdefgh )
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="include-uppercase" type="checkbox" data-toggle="toggle" />
+                Include Uppercase Characters ( e.g. ABCDEFGH )
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="exclude-similar" type="checkbox" data-toggle="toggle" />
+                Exclude Similar Characters ( e.g. i, l, 1, L, o, 0, O )
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="exclude-ambiguous" type="checkbox" data-toggle="toggle" />
+                Exclude Ambiguous Characters ( { } [ ] ( ) / \ ' " ` ~ , ; : . < > )
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="generate-on-device" type="checkbox" data-toggle="toggle" />
+                Generate On Your Device ( do NOT send across the Internet )
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="auto-select" type="checkbox" data-toggle="toggle" />
+                Auto-Select ( select the password automatically )
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input id="load-settings-anywhere" type="checkbox" data-toggle="toggle" />
+                Load My Settings Anywhere - URL to load my settings on other computers quickly
+            </label>
         </div>
     </div>
-</form>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            @*TODO: borders of the next imput, equal radio than previous inputs *@
+            <label class="lbl-for-control-form">Your Password</label>
+            <input id="txt-new-passw" type="text" class="form-control" asp-for="OutputPassword" value="@Model.OutputPassword" />
+        </div>
+    </div>
+</div>
+@*</form>*@
+
 
 @section Scripts {
     <script>
-        try {
-            let inputToUse = "@inputToUse";
+         try
+         {
+             //let passwordToRequest = {
+             //    inputPassword: '',
+             //    outputPassword: '',
+             //    length: '',
+             //    minLength: '',
+             //    maxLength: '',
+             //    settings: {
+             //        includeSymbols: 0,
+             //        includeNUmbers: 0,
+             //        includeLowercase: 0,
+             //        includeUppercase: 0,
+             //        excludeSimilar: 0,
+             //        excludeAmbiguous: 0,
+             //        generateOnDevice: 0,
+             //        autoSelect: 0,
+             //        autoCopyToClipboard: 0,
+             //        loadSettingsAnywhere: $("#load-settings-anywhere").is(":checked")
+             //    }
+             //};
 
-            $(document).ready(function () {
-                if (inputToUse == "1") {
-                    $("#rdoUseExisting").attr("checked", "checked");
-                }
-                else {
-                    $("#rdoDontUseExisting").attr("checked", "checked");
-                }
+             $(document).ready(function() {
+                 $("#btn-submit").on('click', SubmitPasswordRequestAjax);
+                 //$("#hide-password-radio").attr("checked", "checked");
+                 $('[data-toggle="tooltip"]').tooltip();
+             });
 
-                $('[data-toggle="tooltip"]').tooltip();
-            });
-            // PREBA para el try-catch: generar excepcion:
-            var ajaxRequest = new XMLHttpRequest();
-            ajaxRequest.open("GET", "dsfsdf" , false);  // url = "/Home/About";
-            ajaxRequest.send(); // = XMLHttpRequest(GET, "sdfdf", false);
-            if (ajaxRequest.status == 404) {
-                throw "EXCEPCIÓN JS PROVOCADA PARA PROBAR TRY-CATCH";
-            }
-            //var prueba = "" / 45 / "";
-            //if (isNaN(prueba)) {
-            //    throw "no es un numero";
-            //}
-        }
-        catch (exception) {
-            /* Handle any exceptions here. 
-               This example displays the exception to the user */
-            alert(exception);
-        }
+             function SubmitPasswordRequestAjax()
+             {
+                 // PREBA para el try-catch: generar excepcion:
+                 @*var ajaxRequest = new XMLHttpRequest();
+                 // PAra enviar data en el PSST:
+                 // TODO: ver por que el Chrome da 'Failed to execute' esta linea. Cambiado a jQuery
+                 ajaxRequest.setRequestHeader();
+                 ajaxRequest.open("POST", "@Url.Action("GetResult")", false);  // url = "/Home/About";
+                 ajaxRequest.send("@Model"); // = XMLHttpRequest(GET, "sdfdf", false);
+                 if (ajaxRequest.status == 404) {
+                     //throw "EXCEPCIÓN JS PROVOCADA PARA PROBAR TRY-CATCH";
+                 }
+                 if (ajaxRequest.status == 200) {
+                     alert(data.outputPasword);
+                 }*@
+                 let passwordRequest = {
+                     inputPassword: $("#txtExistingPassw").val(),
+                     length: $("#selSettings").val(),                    
+                     settings:
+                     {
+                         hidePassword: $("#hide-password").is(":checked"),
+                         includeLowercase: $("#include-lowercase").is(":checked"),
+                         includeUppercase: $("#include-uppercase").is(":checked"),
+                         autoCopyToClipboard: $("#auto-copy-to-clipboard").is(":checked"),
+                         loadSettingsAnywhere: $("#load-settings-anywhere").is(":checked")
+                     }
+                 };
+
+                 //let passwordRequest = JSON.stringify(request);
+                 debugger;
+                 let url = '@Url.Action("GetResult", "Home")';
+
+                 $.ajax({
+                     type: "POST",
+                     url: url,
+                     //contentType: 'json',
+                     data: passwordRequest,
+                     success: function (data) {
+                         AjaxSuccess(data);                                                  
+                         //AjaxPostObjectSuccess(data, selectorId);
+                     },
+                     error: function (jqXHR, textStatus, errorThrown) {
+                         alert("FAIL");
+                         //AjaxPostObjectError(jqXHR, textStatus, errorThrown);
+                     }
+                 });
+
+                 @*$.ajax({
+                     type: "POST",
+                     url: '@Url.Action("GetResult")',
+                     //contentType: "application/json; charset=utf-8", //'application/json; charset=utf-8';
+                     data: passwordRequest,
+                     success: function (data) {
+                         alert("SUCC");
+                     }
+                     //dataType: "json",
+                 }).fail(function() {
+                     alert("FAIL");
+                 });*@
+
+                 @*// TODO: ver por que error Failed
+                 $.post('@Url.Action("GetResult")', data, function(data) {
+                     alert("FRIST DONE");
+                 })
+                 .done(function() {
+                     alert("DONE");
+                 })
+                 .fail(function() {
+                     alert("FAIL");
+                 });*@
 
 
+                 // TODO: Remove for visible password
+                 $("#txtNewPassw").focus();
+             }
+
+             function AjaxSuccess(data) {
+                 if ($("#hide-password").is(":checked")) {
+                     $("#txt-new-passw").css("opacity", "0");
+                 }
+                 else {
+                     $("#txt-new-passw").css("opacity", "1");
+                 }
+
+                 if ($("#auto-select").is(":checked")) {
+                     $("#txt-new-passw").focus();
+                 }                 
+                 
+                 $("#txt-new-passw").val(data.outputPassword);
+                 CopyToClipboard(data.outputPassword);
+             }
+
+             function CopyToClipboard(textToCopy) {
+                 let $temp = $("<input>");
+                 $("body").append($temp);
+                 $temp.val(textToCopy).select();
+                 document.execCommand("copy");
+                 $temp.remove();
+             }
+         }
+         catch (exception)
+         {
+             /* Handle any exceptions here.
+             This example displays the exception to the user */
+             alert(exception);
+         }
     </script>
 }
