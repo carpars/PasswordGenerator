@@ -114,8 +114,35 @@ label {
 
 .lbl-for-control-form {
     width: 100%;
-    border-bottom: solid 1px;
+    font-size:3rem;
+    font-weight:900;
+    /*border-bottom: solid 1px;*/
 }
+
+/*.cstm-lbl-for-align-with {    
+    font-size: 3rem;
+    font-weight: 900;
+    border-bottom: solid 1px;
+}*/
+
+.cstm-div-for-align-with {
+    display: inline-block;    
+}
+
+.cstm-div-for-align-right {
+    display: inline-block;
+    position: relative;
+    right: 0;
+}
+
+.m-b-1rem {
+    margin-bottom: 1rem;
+}
+
+.m-t-2rem {
+    margin-top: 2rem;
+}
+
 
 /* ---------- Icons inside input BEGIN ---------- */
 span.with-icon {

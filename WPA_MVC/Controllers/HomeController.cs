@@ -126,8 +126,7 @@ namespace WPA_MVC.Controllers
             {
                 if (!String.IsNullOrWhiteSpace(passwordRequest.InputPassword))
                 {
-                    passwLength = passwordRequest.InputPassword.Length;
-                    existingPasswSymbols = GetSymbols(passwordRequest.InputPassword, passwLength);
+                    passwLength = passwordRequest.InputPassword.Length;                    
                 }
                 else if (!String.IsNullOrWhiteSpace(passwordRequest.Length))
                 {
@@ -137,6 +136,14 @@ namespace WPA_MVC.Controllers
                 {
                     passwLength = Constants.PasswordMinLength;
                 }
+
+                if (Boolean.TryParse(passwordRequest.Settings.IncludeSymbols, out bool result))        
+                {
+                    if (result)
+                    {
+                        existingPasswSymbols = GetSymbols(passwordRequest.InputPassword, passwLength);
+                    }                    
+                }                
 
                 // The number of letters will be half of the non-symbol character amount
                 passwLettersLength = (int)(Math.Round((decimal)(passwLength - existingPasswSymbols.Length) / 2, MidpointRounding.AwayFromZero));

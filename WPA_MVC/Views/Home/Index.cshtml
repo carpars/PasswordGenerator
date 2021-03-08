@@ -35,15 +35,15 @@
                         {
                             if (length == 0 && i == minLength)
                             {
-                                <option class="container-1row-font-size-normal" selected>@i</option>
+                                <option class="container-1row-font-size-normal" value="@i" selected>@i</option>
                             }
                             else if (length != 0 && i == length)
                             {
-                                <option class="container-1row-font-size-normal" selected>@i</option>
+                                <option class="container-1row-font-size-normal" value="@i" selected>@i</option>
                             }
                             else
                             {
-                                <option class="container-1row-font-size-normal">@i</option>
+                                <option class="container-1row-font-size-normal" value="@i">@i</option>
                             }
                         }
                     }
@@ -62,11 +62,11 @@
                         <span uk-icon="icon: info" ratio="1"></span>
                     </span>
                 </div>
-                <input id="txtExistingPassw" type="text" class="form-control" asp-for="InputPassword" value="@Model.InputPassword" placeholder="Enter the pattern password" />
+                <input id="input-passw" type="text" class="form-control" asp-for="InputPassword" value="@Model.InputPassword" placeholder="Enter the pattern password" />
                 @*<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email"></label>*@
                 <div class="input-group-append">
                     <button id="btn-submit" class="btn btn-primary">Submit</button>
-                    <button type="reset" class="btn btn-danger">Reset</button>
+                    <button id="btn-reset-inputs" class="btn btn-danger">Reset</button>
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@
                     Your Password
                 </label>
                 <div class="input-group mb-2">
-                    <input id="txt-new-passw" type="text" class="form-control" asp-for="OutputPassword" value="@Model.OutputPassword" />
+                    <input id="output-passw" type="text" class="form-control" asp-for="OutputPassword" value="@Model.OutputPassword" />
                     <div class="input-group-append">
                         <button id="btn-copy" class="btn btn-primary">Copy</button>
                     </div>
@@ -89,78 +89,89 @@
         </div>
     </div>
 </div>
+<div class="row m-t-2rem">   
+    <div class="d-flex justify-content-between col-sm-12">        
+        <div>
+            <label class="lbl-for-control-form m-b-1rem">
+                Settings
+            </label>
+        </div>
+        <div>
+            <button id="btn-reset-settings" class="btn btn-danger">Reset</button>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-sm-12">
-        <label class="lbl-for-control-form">
-            Settings
-        </label>
         <div class="form-group">
             <input id="save-preferences" type="checkbox" data-toggle="toggle" />
-            <label for="save-preferences">Save My Preferences ( save all the settings below for later use )</label>
+            <label name="handle-control-by-code" for="save-preferences">
+                Save My Preferences in the local machine ( the Length and the Settings below )
+            </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="hide-password" type="checkbox" data-toggle="toggle" />
+            <input id="hide-passw" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="hide-passw">
                 Hide password
             </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="auto-copy-to-clipboard" type="checkbox" data-toggle="toggle" />
+            <input id="auto-copy-to-clipboard" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="auto-copy-to-clipboard">
                 Auto-Copy to Clipboard ( copy the password automatically )
             </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="include-symbols" type="checkbox" data-toggle="toggle" />
+            <input id="include-symbols" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="include-symbols">
                 Include Symbols ( e.g. $%&! )
             </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="include-numbers" type="checkbox" data-toggle="toggle" />
+            <input id="include-numbers" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="include-numbers">
                 Include Numbers ( e.g. 123456 )
             </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="include-lowercase" type="checkbox" data-toggle="toggle" />
+            <input id="include-lowercase" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="include-lowercase">
                 Include Lowercase Characters ( e.g. abcdefgh )
             </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="include-uppercase" type="checkbox" data-toggle="toggle" />
+            <input id="include-uppercase" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="include-uppercase">
                 Include Uppercase Characters ( e.g. ABCDEFGH )
             </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="exclude-similar" type="checkbox" data-toggle="toggle" />
+            <input id="exclude-similar" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="exclude-similar">
                 Exclude Similar Characters ( e.g. i, l, 1, L, o, 0, O )
             </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="exclude-ambiguous" type="checkbox" data-toggle="toggle" />
+            <input id="exclude-ambiguous" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="exclude-ambiguous">
                 Exclude Ambiguous Characters ( { } [ ] ( ) / \ ' " ` ~ , ; : . < > )
             </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="generate-on-device" type="checkbox" data-toggle="toggle" />
+            <input id="generate-on-device" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="generate-on-device">
                 Generate On Your Device ( do NOT send across the Internet )
             </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="auto-select" type="checkbox" data-toggle="toggle" />
+            <input id="auto-select" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="auto-select">
                 Auto-Select ( select the password automatically )
             </label>
         </div>
         <div class="form-group">
-            <label>
-                <input id="load-settings-anywhere" type="checkbox" data-toggle="toggle" />
+            <input id="load-settings-anywhere" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="load-settings-anywhere">
                 Load My Settings Anywhere - URL to load my settings on other computers quickly
             </label>
         </div>
@@ -173,58 +184,39 @@
     <script>
         let passwordRequestOnLoad = null;
 
-        let passwordRequest = {
-            inputPassword: '',
-            length: '',
-            settings:
-            {
-                hidePassword: '',
-                includeLowercase: '',
-                includeUppercase: '',
-                autoCopyToClipboard: '',
-                loadSettingsAnywhere: ''
-            }
-        };
+        let passwordRequest = {};
 
          try
          {
-             //let passwordToRequest = {
-             //    inputPassword: '',
-             //    outputPassword: '',
-             //    length: '',
-             //    minLength: '',
-             //    maxLength: '',
-             //    settings: {
-             //        includeSymbols: 0,
-             //        includeNUmbers: 0,
-             //        includeLowercase: 0,
-             //        includeUppercase: 0,
-             //        excludeSimilar: 0,
-             //        excludeAmbiguous: 0,
-             //        generateOnDevice: 0,
-             //        autoSelect: 0,
-             //        autoCopyToClipboard: 0,
-             //        loadSettingsAnywhere: $("#load-settings-anywhere").is(":checked")
-             //    }
-             //};
+             $(document).ready(function () {
+                 //localStorage.DataChanged = function () {
+                 //    alert("changed");
+                 //};
 
-             $(document).ready(function() {
                  $("#btn-submit").on('click', SubmitPasswordRequestAjax);
                  $("#btn-copy").on('click', function (ev) {
-                     CopyToClipboard($("#txt-new-passw").val());
+                     CopyToClipboard($("#output-passw").val());
                  });
-                 //$("#hide-password-radio").attr("checked", "checked");
+                 $("#btn-reset-inputs").on('click', ResetInputs);
+                 $("#btn-reset-settings").on('click', ResetSettings);
+
                  $('[data-toggle="tooltip"]').tooltip();
 
                  // TODO: check why with these Bootstrap 5 switchers, <label>
-                 //     doesn0t handle its input with 'for'
-
-                 $("label[for='save-preferences'").on('click', function (ev) {                     
-                     $("#save-preferences").toggle();
+                 //     doesn't handle its input with 'for'
+                 let $labelsPreferences = $("label[name='handle-control-by-code']");
+                 $labelsPreferences.each(function () {
+                     $(this).on('click', function (ev) {
+                         let idMatchingControl = $(this).attr("for");
+                         let newState = $("#" + idMatchingControl).is(":checked") ? 1 : 0;
+                         $("#" + idMatchingControl).prop("checked", newState);
+                         $("#" + idMatchingControl).bootstrapToggle("toggle");                         
+                     });
                  });
 
-                 let loadSettingsAnywhere = localStorage.getItem("loadSettingsAnywhere");
-                 if (loadSettingsAnywhere) {
+                 let savePreferences = localStorage.getItem("save-preferences");
+
+                 if (savePreferences == "true") {
                      LoadData();
                  }
 
@@ -232,38 +224,41 @@
                      passwordRequestOnLoad = passwordRequest;
                  });
 
-                 // TODO: completar esto:
-                 //window.on('neforeUnload', function (ev) {
-                 //    alert("Before unload");
-                 //    if (DataChanged) {
-                 //        // PREGUNTAR SI QUIERE ABANDONAR??
-                 //        if ($("#save-preferences").is(":checked")) {
-                 //            SaveData();
-                 //        }
-                 //    }
-                 //});
+                 window.addEventListener("beforeunload", function (ev) {
+                     // event.preventDefault();
+                     if (DataChanged) {
+                         // PREGUNTAR SI QUIERE ABANDONAR??
+                         //let message = 'Some changes are not saved yet!';
+                         // event.preventDefault();
+                         //event.returnValue = message;
+                         //event.returnValue = true;
+                         if ($("#save-preferences").is(":checked")) {
+                             SaveData();
+                         }
+                     }
+                 });
              });
+
+             function ResetInputs() {
+                 $("#length option:first-child").prop("selected", "selected");                 
+             }
+
+             function ResetSettings() {
+                 let $checkboxesPreferences = $("input[data-toggle='toggle']");
+                 $checkboxesPreferences.each(function () {
+                     let idInput = $(this).attr("id");
+                     if ($(this).is(":checked")) {
+                         $(this).bootstrapToggle("toggle");
+                         $(this).prop("checked", "");
+                     }
+                 });
+             }
 
              function SubmitPasswordRequestAjax()
              {
-                 // PREBA para el try-catch: generar excepcion:
-                 @*var ajaxRequest = new XMLHttpRequest();
-                 // PAra enviar data en el PSST:
-                 // TODO: ver por que el Chrome da 'Failed to execute' esta linea. Cambiado a jQuery
-                 ajaxRequest.setRequestHeader();
-                 ajaxRequest.open("POST", "@Url.Action("GetResult")", false);  // url = "/Home/About";
-                 ajaxRequest.send("@Model"); // = XMLHttpRequest(GET, "sdfdf", false);
-                 if (ajaxRequest.status == 404) {
-                     //throw "EXCEPCIÓN JS PROVOCADA PARA PROBAR TRY-CATCH";
-                 }
-                 if (ajaxRequest.status == 200) {
-                     alert(data.outputPasword);
-                 }*@
                  if (DataChanged) {
                      SaveData();
                  }
-
-                 //let passwordRequest = JSON.stringify(request);
 
                  let url = '@Url.Action("GetResult", "Home")';
 
@@ -279,36 +274,28 @@
                          AjaxError(jqXHR, textStatus, errorThrown);
                      }
                  });
-
-                 @*// TODO: ver por que error Failed
-                 $.post('@Url.Action("GetResult")', data, function(data) {
-                     alert("FRIST DONE");
-                 })
-                 .done(function() {
-                     alert("DONE");
-                 })
-                 .fail(function() {
-                     alert("FAIL");
-                 });*@
              }
 
              function AjaxSuccess(data) {
-                 debugger;
-                 if ($("#hide-password").is(":checked")) {
-                     $("#txt-new-passw").css("opacity", "0");
+
+                 if ($("#hide-passw").is(":checked")) {
+                     $("#output-passw").css("opacity", "0");
                  }
                  else {
-                     $("#txt-new-passw").css("opacity", "1");
+                     $("#output-passw").css("opacity", "1");
                  }
 
                  // TODO: Remove for hidden password
                  if ($("#auto-select").is(":checked")) {
-                     $("#txt-new-passw").focus();
+                     $("#output-passw").focus();
                  }
 
-                 $("#txt-new-passw").val(data.outputPassword);
+                 $("#output-passw").val(data.outputPassword);
 
-                 CopyToClipboard(data.outputPassword);
+                 if ($("#auto-copy-to-clipboard").is(":checked")) {
+                     CopyToClipboard(data.outputPassword);
+                 }
+                 
              }
 
              function CopyToClipboard(textToCopy) {
@@ -322,57 +309,66 @@
              function LoadData(SaveData) {
                  // Load the control data
                  /*$("#txtExistingPassw").val(localStorage.getItem("inputPassword"));*/
-                 $("#length").val(localStorage.getItem("length"));
+                 $("#length option[value='" + localStorage.getItem("length") + "']").prop("selected", "selected");
 
                  // TODO: cargar del web storage recorriendo
                  //     autom. las props del objetoç
+                 // IMPORTANT: we are catching a data-attribute, should use a 'name' attr.
+                 let $checkboxesPreferences = $("input[data-toggle='toggle']");
+                 $checkboxesPreferences.each(function () {                     
+                     let idInput = $(this).attr("id");
+                     if ("" + $(this).is(":checked") + "" != localStorage.getItem("" + idInput)) {
+                         $(this).bootstrapToggle("toggle");
+                     }
+                 });
 
-                     if ($("#save-preferences").is(":checked") != localStorage.getItem("savePreferences")) {
-                         $("#save-preferences").toggle();
-                     }
-                     if ($("#hide-password").is(":checked") != localStorage.getItem("hidePassword")) {
-                         $("#hide-password").toggle();
-                     }
-                     if ($("#include-symbols").is(":checked") != localStorage.getItem("includeSymbols")) {
-                         $("#include-symbols").toggle();
-                     }
-                     if ($("#include-numbers").is(":checked") != localStorage.getItem("includeNumbers")) {
-                         $("#include-numbers").toggle();
-                     }
-                     if ($("#include-lowercase").is(":checked") != localStorage.getItem("includeLowercase")) {
-                         $("#include-lowercase").toggle();
-                     }
-                     if ($("#include-uppercase").is(":checked") != localStorage.getItem("includeUppercase")) {
-                         $("#include-uppercase").toggle();
-                     }
-                     if ($("#exclude-similar").is(":checked") != localStorage.getItem("excludeSimilar")) {
-                         $("#exclude-similar").toggle();
-                     }
-                     if ($("#exclude-ambiguous").is(":checked") != localStorage.getItem("excludeAmbiguous")) {
-                         $("#exclude-ambiguous").toggle();
-                     }
-                     if ($("#generate-on-device").is(":checked") != localStorage.getItem("generateOnDevice")) {
-                         $("#generate-on-device").toggle();
-                     }
-                     if ($("#auto-select").is(":checked") != localStorage.getItem("autoSelect")) {
-                         $("#auto-select").toggle();
-                     }
-                     if ($("#auto-copy-to-clipboard").is(":checked") != localStorage.getItem("autoCopyToClipboard")) {
-                         $("auto-copy-to-clipboard").toggle();
-                     }
-                     if ($("#load-settings-anywhere").is(":checked") != localStorage.getItem("loadSettingsAnywhere")) {
-                         $("#load-settings-anywhere").toggle();
-                     }
+
+                     //if ($("#save-preferences").is(":checked") != localStorage.getItem("savePreferences")) {
+
+                     //}
+                     //if ($("#hide-passw").is(":checked") != localStorage.getItem("hidePassword")) {
+                     //    $("#hide-passw").toggle();
+                     //}
+                     //if ($("#include-symbols").is(":checked") != localStorage.getItem("includeSymbols")) {
+                     //    $("#include-symbols").toggle();
+                     //}
+                     //if ($("#include-numbers").is(":checked") != localStorage.getItem("includeNumbers")) {
+                     //    $("#include-numbers").toggle();
+                     //}
+                     //if ($("#include-lowercase").is(":checked") != localStorage.getItem("includeLowercase")) {
+                     //    $("#include-lowercase").toggle();
+                     //}
+                     //if ($("#include-uppercase").is(":checked") != localStorage.getItem("includeUppercase")) {
+                     //    $("#include-uppercase").toggle();
+                     //}
+                     //if ($("#exclude-similar").is(":checked") != localStorage.getItem("excludeSimilar")) {
+                     //    $("#exclude-similar").toggle();
+                     //}
+                     //if ($("#exclude-ambiguous").is(":checked") != localStorage.getItem("excludeAmbiguous")) {
+                     //    $("#exclude-ambiguous").toggle();
+                     //}
+                     //if ($("#generate-on-device").is(":checked") != localStorage.getItem("generateOnDevice")) {
+                     //    $("#generate-on-device").toggle();
+                     //}
+                     //if ($("#auto-select").is(":checked") != localStorage.getItem("autoSelect")) {
+                     //    $("#auto-select").toggle();
+                     //}
+                     //if ($("#auto-copy-to-clipboard").is(":checked") != localStorage.getItem("autoCopyToClipboard")) {
+                     //    $("auto-copy-to-clipboard").toggle();
+                     //}
+                     //if ($("#load-settings-anywhere").is(":checked") != localStorage.getItem("loadSettingsAnywhere")) {
+                     //    $("#load-settings-anywhere").toggle();
+                     //}
 
 
                  // Load the variable
                  passwordRequest = {
-                     inputPassword: $("#txtExistingPassw").val(),
+                     inputPassword: $("#input-passw").val(),
                      length: $("#length").val(),
                      settings:
                      {
                          savePreferences: $("#save-preferences").is(":checked"),
-                         hidePassword: $("#hide-password").is(":checked"),
+                         hidePassword: $("#hide-passw").is(":checked"),
                          includeSymbols: $("#include-symbols").is(":checked"),
                          includeNumbers: $("#include-numbers").is(":checked"),
                          includeLowercase: $("#include-lowercase").is(":checked"),
@@ -387,63 +383,74 @@
                  };
              }
 
-             function SaveData() {
-                 if ($("#save-preferences").is(":checked")) {
+             function SaveData() {                                                     
+                 localStorage.setItem("length", $("#length option:selected").val());
+
+                 if ($("#save-preferences").is(":checked")) {                 
                      // Save the preferences
 
                      // TODO: guardar en web storage recorriendo
                      //     autom. las props del objeto
-                     if ($("#length").val() != localStorage.getItem("length")) {
-                         localStorage.setItem("length", $("#length").val());                         
-                     }
-                     if ($("#save-preferences").is(":checked") != localStorage.getItem("savePreferences")) {
-                         localStorage.setItem("savePreferences", $("#save-preferences").is(":checked"));
-                     }
-                     if ($("#hide-password").is(":checked") != localStorage.getItem("hidePassword")) {
-                         localStorage.setItem("hidePassword", $("#hide-password").is(":checked"));
-                     }
-                     if ($("#include-symbols").is(":checked") != localStorage.getItem("includeSymbols")) {
-                         localStorage.setItem("includeSymbols", $("#include-symbols").is(":checked"));
-                     }
-                     if ($("#include-numbers").is(":checked") != localStorage.getItem("includeNumbers")) {
-                         localStorage.setItem("includeNumbers", $("#include-numbers").is(":checked"));
-                     }
-                     if ($("#include-lowercase").is(":checked") != localStorage.getItem("includeLowercase")) {
-                         localStorage.setItem("includeLowercase", $("#include-lowercase").is(":checked"));
-                     }
-                     if ($("#include-uppercase").is(":checked") != localStorage.getItem("includeUppercase")) {
-                         localStorage.setItem("includeUppercase", $("#include-uppercase").is(":checked"));
-                     }
-                     if ($("#exclude-similar").is(":checked") != localStorage.getItem("excludeSimilar")) {
-                         localStorage.setItem("excludeSimilar", $("#exclude-similar").is(":checked"));
-                     }
-                     if ($("#exclude-ambiguous").is(":checked") != localStorage.getItem("excludeAmbiguous")) {
-                         localStorage.setItem("excludeAmbiguous", $("#exclude-ambiguous").is(":checked"));
-                     }
-                     if ($("#generate-on-device").is(":checked") != localStorage.getItem("generateOnDevice")) {
-                         localStorage.setItem("generateOnDevice", $("#generate-on-device").is(":checked"));
-                     }
-                     if ($("#auto-select").is(":checked") != localStorage.getItem("autoSelect")) {
-                         localStorage.setItem("autoSelect", $("#auto-select").is(":checked"));
-                     }
-                     if ($("#auto-copy-to-clipboard").is(":checked") != localStorage.getItem("autoCopyToClipboard")) {
-                         localStorage.setItem("autoCopyToClipboard", $("#auto-copy-to-clipboard").is(":checked"));
-                     }
-                     if ($("#load-settings-anywhere").is(":checked") != localStorage.getItem("loadSettingsAnywhere")) {
-                         localStorage.setItem("loadSettingsAnywhere", $("#load-settings-anywhere").is(":checked"));
-                     }
+                     // IMPORTANT: we are catching a data-attribute, should use a 'name' attr.
+                     let $checkboxesPreferences = $("input[data-toggle='toggle']");
+                     $checkboxesPreferences.each(function () {
+                         let idInput = $(this).attr("id");
+                         if ($(this).is(":checked") != localStorage.getItem("" + idInput)) {
+                             localStorage.setItem("" + idInput, "" + $(this).is(":checked"));
+                         }
+                     });
+
+                     //if ($("#length").val() != localStorage.getItem("length")) {
+                     //    localStorage.setItem("length", $("#length").val());
+                     //}
+                     //if ($("#save-preferences").is(":checked") != localStorage.getItem("save-preferences")) {
+                     //    localStorage.setItem("save-preferences", $("#save-preferences").is(":checked"));
+                     //}
+                     //if ($("#hide-passw").is(":checked") != localStorage.getItem("hide-passw")) {
+                     //    localStorage.setItem("hide-passw", $("#hide-passw").is(":checked"));
+                     //}
+                     //if ($("#include-symbols").is(":checked") != localStorage.getItem("include-symbols")) {
+                     //    localStorage.setItem("include-symbols", $("#include-symbols").is(":checked"));
+                     //}
+                     //if ($("#include-numbers").is(":checked") != localStorage.getItem("include-numbers")) {
+                     //    localStorage.setItem("include-numbers", $("#include-numbers").is(":checked"));
+                     //}
+                     //if ($("#include-lowercase").is(":checked") != localStorage.getItem("include-lowercase")) {
+                     //    localStorage.setItem("include-lowercase", $("#include-lowercase").is(":checked"));
+                     //}
+                     //if ($("#include-uppercase").is(":checked") != localStorage.getItem("include-uppercase")) {
+                     //    localStorage.setItem("include-uppercase", $("#include-uppercase").is(":checked"));
+                     //}
+                     //if ($("#exclude-similar").is(":checked") != localStorage.getItem("exclude-similar")) {
+                     //    localStorage.setItem("exclude-similar", $("#exclude-similar").is(":checked"));
+                     //}
+                     //if ($("#exclude-ambiguous").is(":checked") != localStorage.getItem("exclude-ambiguous")) {
+                     //    localStorage.setItem("exclude-ambiguous", $("#exclude-ambiguous").is(":checked"));
+                     //}
+                     //if ($("#generate-on-device").is(":checked") != localStorage.getItem("generate-on-device")) {
+                     //    localStorage.setItem("generate-on-device", $("#generate-on-device").is(":checked"));
+                     //}
+                     //if ($("#auto-select").is(":checked") != localStorage.getItem("auto-select")) {
+                     //    localStorage.setItem("auto-select", $("#auto-select").is(":checked"));
+                     //}
+                     //if ($("#auto-copy-to-clipboard").is(":checked") != localStorage.getItem("auto-copy-to-clipboard")) {
+                     //    localStorage.setItem("auto-copy-to-clipboard", $("#auto-copy-to-clipboard").is(":checked"));
+                     //}
+                     //if ($("#load-settings-anywhere").is(":checked") != localStorage.getItem("load-settings-anywhere")) {
+                     //    localStorage.setItem("load-settings-anywhere", $("#load-settings-anywhere").is(":checked"));
+                     //}
                  }
 
                  // Save the variable
                  passwordRequest = {
-                     inputPassword: $("#txtExistingPassw").val(),
+                     inputPassword: $("#input-passw").val(),
                      length: $("#length").val(),
                      settings:
                      {
                          savePreferences: $("#save-preferences").is(":checked"),
-                         hidePassword: $("#hide-password").is(":checked"),
-                         includeSymbols: $("#hide-symbols").is(":checked"),
-                         includeNumbers: $("#hide-numbers").is(":checked"),
+                         hidePassword: $("#hide-passw").is(":checked"),
+                         includeSymbols: $("#include-symbols").is(":checked"),
+                         includeNumbers: $("#include-numbers").is(":checked"),
                          includeLowercase: $("#include-lowercase").is(":checked"),
                          includeUppercase: $("#include-uppercase").is(":checked"),
                          excludeSimilar: $("#exclude-similar").is(":checked"),
@@ -457,6 +464,7 @@
              }
 
              function DataChanged() {
+                 debugger;
                  if (JSON.stringify(passwordRequest) != JSON.stringify(passwordRequestOnLoad)) {
                      return true;
                  } else {
