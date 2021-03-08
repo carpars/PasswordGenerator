@@ -7,10 +7,7 @@
 
 <div class="h1">Generate a custom random password</div>
 <h4>PENDIENTE:</h4>
-<ol>
-    <li>
-        las &lt;label&gt; de los Settings asociarlas a su control
-    </li>
+<ol>W
     <li>
         Terminar de implementar todos los settings
     </li>
@@ -235,6 +232,9 @@
                          if ($("#save-preferences").is(":checked")) {
                              SaveData();
                          }
+                         else {
+                             localStorage.clear();
+                         }
                      }
                  });
              });
@@ -257,6 +257,8 @@
              function SubmitPasswordRequestAjax()
              {
                  if (DataChanged) {
+                     // TODO: esto es asincrono: llama al ajax antes de SaveData. Poner llamada a ajax como 
+                     //     callback de SaveData y después un return;, y añadir 'else' > misma llamada a ajax
                      SaveData();
                  }
 
@@ -306,9 +308,8 @@
                  $temp.remove();
              }
 
-             function LoadData(SaveData) {
-                 // Load the control data
-                 /*$("#txtExistingPassw").val(localStorage.getItem("inputPassword"));*/
+             function LoadData(SaveData){
+                 // Load the control data                 
                  $("#length option[value='" + localStorage.getItem("length") + "']").prop("selected", "selected");
 
                  // TODO: cargar del web storage recorriendo
@@ -321,45 +322,6 @@
                          $(this).bootstrapToggle("toggle");
                      }
                  });
-
-
-                     //if ($("#save-preferences").is(":checked") != localStorage.getItem("savePreferences")) {
-
-                     //}
-                     //if ($("#hide-passw").is(":checked") != localStorage.getItem("hidePassword")) {
-                     //    $("#hide-passw").toggle();
-                     //}
-                     //if ($("#include-symbols").is(":checked") != localStorage.getItem("includeSymbols")) {
-                     //    $("#include-symbols").toggle();
-                     //}
-                     //if ($("#include-numbers").is(":checked") != localStorage.getItem("includeNumbers")) {
-                     //    $("#include-numbers").toggle();
-                     //}
-                     //if ($("#include-lowercase").is(":checked") != localStorage.getItem("includeLowercase")) {
-                     //    $("#include-lowercase").toggle();
-                     //}
-                     //if ($("#include-uppercase").is(":checked") != localStorage.getItem("includeUppercase")) {
-                     //    $("#include-uppercase").toggle();
-                     //}
-                     //if ($("#exclude-similar").is(":checked") != localStorage.getItem("excludeSimilar")) {
-                     //    $("#exclude-similar").toggle();
-                     //}
-                     //if ($("#exclude-ambiguous").is(":checked") != localStorage.getItem("excludeAmbiguous")) {
-                     //    $("#exclude-ambiguous").toggle();
-                     //}
-                     //if ($("#generate-on-device").is(":checked") != localStorage.getItem("generateOnDevice")) {
-                     //    $("#generate-on-device").toggle();
-                     //}
-                     //if ($("#auto-select").is(":checked") != localStorage.getItem("autoSelect")) {
-                     //    $("#auto-select").toggle();
-                     //}
-                     //if ($("#auto-copy-to-clipboard").is(":checked") != localStorage.getItem("autoCopyToClipboard")) {
-                     //    $("auto-copy-to-clipboard").toggle();
-                     //}
-                     //if ($("#load-settings-anywhere").is(":checked") != localStorage.getItem("loadSettingsAnywhere")) {
-                     //    $("#load-settings-anywhere").toggle();
-                     //}
-
 
                  // Load the variable
                  passwordRequest = {
@@ -384,9 +346,11 @@
              }
 
              function SaveData() {                                                     
-                 localStorage.setItem("length", $("#length option:selected").val());
-
+                 
                  if ($("#save-preferences").is(":checked")) {                 
+                     // Save the inputs
+                     localStorage.setItem("length", $("#length option:selected").val());
+
                      // Save the preferences
 
                      // TODO: guardar en web storage recorriendo
@@ -399,47 +363,7 @@
                              localStorage.setItem("" + idInput, "" + $(this).is(":checked"));
                          }
                      });
-
-                     //if ($("#length").val() != localStorage.getItem("length")) {
-                     //    localStorage.setItem("length", $("#length").val());
-                     //}
-                     //if ($("#save-preferences").is(":checked") != localStorage.getItem("save-preferences")) {
-                     //    localStorage.setItem("save-preferences", $("#save-preferences").is(":checked"));
-                     //}
-                     //if ($("#hide-passw").is(":checked") != localStorage.getItem("hide-passw")) {
-                     //    localStorage.setItem("hide-passw", $("#hide-passw").is(":checked"));
-                     //}
-                     //if ($("#include-symbols").is(":checked") != localStorage.getItem("include-symbols")) {
-                     //    localStorage.setItem("include-symbols", $("#include-symbols").is(":checked"));
-                     //}
-                     //if ($("#include-numbers").is(":checked") != localStorage.getItem("include-numbers")) {
-                     //    localStorage.setItem("include-numbers", $("#include-numbers").is(":checked"));
-                     //}
-                     //if ($("#include-lowercase").is(":checked") != localStorage.getItem("include-lowercase")) {
-                     //    localStorage.setItem("include-lowercase", $("#include-lowercase").is(":checked"));
-                     //}
-                     //if ($("#include-uppercase").is(":checked") != localStorage.getItem("include-uppercase")) {
-                     //    localStorage.setItem("include-uppercase", $("#include-uppercase").is(":checked"));
-                     //}
-                     //if ($("#exclude-similar").is(":checked") != localStorage.getItem("exclude-similar")) {
-                     //    localStorage.setItem("exclude-similar", $("#exclude-similar").is(":checked"));
-                     //}
-                     //if ($("#exclude-ambiguous").is(":checked") != localStorage.getItem("exclude-ambiguous")) {
-                     //    localStorage.setItem("exclude-ambiguous", $("#exclude-ambiguous").is(":checked"));
-                     //}
-                     //if ($("#generate-on-device").is(":checked") != localStorage.getItem("generate-on-device")) {
-                     //    localStorage.setItem("generate-on-device", $("#generate-on-device").is(":checked"));
-                     //}
-                     //if ($("#auto-select").is(":checked") != localStorage.getItem("auto-select")) {
-                     //    localStorage.setItem("auto-select", $("#auto-select").is(":checked"));
-                     //}
-                     //if ($("#auto-copy-to-clipboard").is(":checked") != localStorage.getItem("auto-copy-to-clipboard")) {
-                     //    localStorage.setItem("auto-copy-to-clipboard", $("#auto-copy-to-clipboard").is(":checked"));
-                     //}
-                     //if ($("#load-settings-anywhere").is(":checked") != localStorage.getItem("load-settings-anywhere")) {
-                     //    localStorage.setItem("load-settings-anywhere", $("#load-settings-anywhere").is(":checked"));
-                     //}
-                 }
+                 }                 
 
                  // Save the variable
                  passwordRequest = {
