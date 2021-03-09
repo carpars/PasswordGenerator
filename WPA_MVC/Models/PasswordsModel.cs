@@ -50,6 +50,7 @@ namespace WPA_MVC.Models
         public string IncludeNumbers { get; set; }
         public string IncludeLowercase { get; set; }
         public string IncludeUppercase { get; set; }
+        public string HexadecimalDigits { get; set; }
         public string ExcludeSimilar { get; set; }
         public string ExcludeAmbiguous { get; set; }
         public string GenerateOnDevice { get; set; }

@@ -153,7 +153,7 @@ namespace WPA_MVC.Controllers
 
                 string symbols = existingPasswSymbols;
                 // TODO: Buscar una forma buena de pasar bools de JS en string a Controller bool
-                string letters = GetLetters(passwLettersLength, passwordRequest.Settings.IncludeLowercase == "true" ? true : false, passwordRequest.Settings.IncludeUppercase == "true" ? true : false);
+                string letters = GetLetters(passwLettersLength, passwordRequest.Settings.IncludeLowercase == "true" ? true : false, passwordRequest.Settings.IncludeUppercase == "true" ? true : false, passwordRequest.Settings.HexadecimalDigits == "true" ? true : false);
                 string numbers = GetNumbers(passNumLength);
 
                 toReturn.OutputPassword = String.Concat(symbols, letters, numbers);
@@ -222,7 +222,7 @@ namespace WPA_MVC.Controllers
             return toReturn;
         }
 
-        private static string GetLetters(int letterLength, bool includeLowercase, bool includeUppercase)
+        private static string GetLetters(int letterLength, bool includeLowercase, bool includeUppercase, bool hexadecimalDigits)
         {
             string toReturn = String.Empty;
 
@@ -230,8 +230,18 @@ namespace WPA_MVC.Controllers
             for (int i = 0; i < letterLength; i++)
             {
                 Random random = new Random();
-                // random lowercase letter
-                int a = random.Next(0, 26);
+                int a = 0;
+                if (hexadecimalDigits)
+                {
+                    // random lowercase letter
+                    a = random.Next(0, 5);
+                }
+                else
+                {
+                    // random lowercase letter
+                    a = random.Next(0, 26);
+                }
+                
                 char ch = (char)('a' + a);
                 str = ch.ToString();
 

@@ -1,15 +1,20 @@
 ﻿@model WPA_MVC.Models.Password
 @{
     //string inputToUse = Model.InputToUse ? "1" : "0";
-    ViewData["Title"] = "Generate Password";
+    ViewData["Title"] = "Generate Password";    
+
 }
 
 
 <div class="h1">Generate a custom random password</div>
 <h4>PENDIENTE:</h4>
-<ol>W
+<ol>
+    
     <li>
         Terminar de implementar todos los settings
+    </li>
+    <li>
+        Defaults (sobre todo settings) desde controller: Hide pass, Save Settings, Include numbers, lowercase and uppercase letters
     </li>
 </ol>
 
@@ -143,6 +148,12 @@
             </label>
         </div>
         <div class="form-group">
+            <input id="hexadecimal-digits" type="checkbox" data-toggle="toggle" />
+            <label name="handle-control-by-code" for="hexadecimal-digits">
+                Use hexadecimal digits
+            </label>
+        </div>
+        <div class="form-group">
             <input id="exclude-similar" type="checkbox" data-toggle="toggle" />
             <label name="handle-control-by-code" for="exclude-similar">
                 Exclude Similar Characters ( e.g. i, l, 1, L, o, 0, O )
@@ -218,7 +229,26 @@
                  }
 
                  SaveData(function () {
-                     passwordRequestOnLoad = passwordRequest;
+                     passwordRequestOnLoad = {
+                         inputPassword: passwordRequest.inputPassword,
+                         length: passwordRequest.length,
+                         settings:
+                         {
+                             savePreferences: passwordRequest.savePreferences,
+                             hidePassword: passwordRequest.hidePassword,
+                             includeSymbols: passwordRequest.includeSymbols,
+                             includeNumbers: passwordRequest.includeNumbers,
+                             includeLowercase: passwordRequest.includeLowercase,
+                             includeUppercase: passwordRequest.includeUppercase,
+                             hexadecimalDigits: passwordRequest.hexadecimalDigits,
+                             excludeSimilar: passwordRequest.excludeSimilar,
+                             excludeAmbiguous: passwordRequest.excludeAmbiguous,
+                             generateOnDevice: passwordRequest.generateOnDevice,
+                             autoSelect: passwordRequest.autoSelect,
+                             autoCopyToClipboard: passwordRequest.autoCopyToClipboard,
+                             loadSettingsAnywhere: passwordRequest.loadSettingsAnywhere
+                         }
+                     };                         
                  });
 
                  window.addEventListener("beforeunload", function (ev) {
@@ -256,7 +286,7 @@
 
              function SubmitPasswordRequestAjax()
              {
-                 if (DataChanged) {
+                 if (DataChanged()) {
                      // TODO: esto es asincrono: llama al ajax antes de SaveData. Poner llamada a ajax como 
                      //     callback de SaveData y después un return;, y añadir 'else' > misma llamada a ajax
                      SaveData();
@@ -308,7 +338,7 @@
                  $temp.remove();
              }
 
-             function LoadData(SaveData){
+             function LoadData(SaveData) {
                  // Load the control data                 
                  $("#length option[value='" + localStorage.getItem("length") + "']").prop("selected", "selected");
 
@@ -316,33 +346,12 @@
                  //     autom. las props del objetoç
                  // IMPORTANT: we are catching a data-attribute, should use a 'name' attr.
                  let $checkboxesPreferences = $("input[data-toggle='toggle']");
-                 $checkboxesPreferences.each(function () {                     
+                 $checkboxesPreferences.each(function () {
                      let idInput = $(this).attr("id");
                      if ("" + $(this).is(":checked") + "" != localStorage.getItem("" + idInput)) {
                          $(this).bootstrapToggle("toggle");
                      }
                  });
-
-                 // Load the variable
-                 passwordRequest = {
-                     inputPassword: $("#input-passw").val(),
-                     length: $("#length").val(),
-                     settings:
-                     {
-                         savePreferences: $("#save-preferences").is(":checked"),
-                         hidePassword: $("#hide-passw").is(":checked"),
-                         includeSymbols: $("#include-symbols").is(":checked"),
-                         includeNumbers: $("#include-numbers").is(":checked"),
-                         includeLowercase: $("#include-lowercase").is(":checked"),
-                         includeUppercase: $("#include-uppercase").is(":checked"),
-                         excludeSimilar: $("#exclude-similar").is(":checked"),
-                         excludeAmbiguous: $("#exclude-ambiguous").is(":checked"),
-                         generateOnDevice: $("#generate-on-device").is(":checked"),
-                         autoSelect: $("#auto-select").is(":checked"),
-                         autoCopyToClipboard: $("#auto-copy-to-clipboard").is(":checked"),
-                         loadSettingsAnywhere: $("#load-settings-anywhere").is(":checked")
-                     }
-                 };
              }
 
              function SaveData() {                                                     
@@ -350,7 +359,7 @@
                  if ($("#save-preferences").is(":checked")) {                 
                      // Save the inputs
                      localStorage.setItem("length", $("#length option:selected").val());
-
+                     console.log("INIT");
                      // Save the preferences
 
                      // TODO: guardar en web storage recorriendo
@@ -358,7 +367,7 @@
                      // IMPORTANT: we are catching a data-attribute, should use a 'name' attr.
                      let $checkboxesPreferences = $("input[data-toggle='toggle']");
                      $checkboxesPreferences.each(function () {
-                         let idInput = $(this).attr("id");
+                         let idInput = $(this).attr("id");                         
                          if ($(this).is(":checked") != localStorage.getItem("" + idInput)) {
                              localStorage.setItem("" + idInput, "" + $(this).is(":checked"));
                          }
@@ -377,10 +386,11 @@
                          includeNumbers: $("#include-numbers").is(":checked"),
                          includeLowercase: $("#include-lowercase").is(":checked"),
                          includeUppercase: $("#include-uppercase").is(":checked"),
+                         hexadecimalDigits: $("#hexadecimal-digits").is(":checked"),
                          excludeSimilar: $("#exclude-similar").is(":checked"),
                          excludeAmbiguous: $("#exclude-ambiguous").is(":checked"),
                          generateOnDevice: $("#generate-on-device").is(":checked"),
-                         autoSelect: $("#ato-select").is(":checked"),
+                         autoSelect: $("#auto-select").is(":checked"),
                          autoCopyToClipboard: $("#auto-copy-to-clipboard").is(":checked"),
                          loadSettingsAnywhere: $("#load-settings-anywhere").is(":checked")
                      }
