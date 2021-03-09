@@ -34,6 +34,7 @@ namespace WPA_MVC.Models
         public bool IncludeNumbers { get; set; }
         public bool IncludeLowercase { get; set; }
         public bool IncludeUppercase { get; set; }
+        public string HexadecimalDigits { get; set; }
         public bool ExcludeSimilar { get; set; }
         public bool ExcludeAmbiguous { get; set; }
         public bool GenerateOnDevice { get; set; }

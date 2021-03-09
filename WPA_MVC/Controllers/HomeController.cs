@@ -8,99 +8,29 @@ using Microsoft.AspNetCore.Mvc;
 using WPA_MVC.Models;
 using WPA_MVC.Infrastructure;
 using System.Windows.Forms;
+using Microsoft.Extensions.Configuration;
 
 namespace WPA_MVC.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private WebConfig _webConfig;
+        public HomeController(WebConfig webConfig)
         {
-            Password password = new Password()
-            {                
-                MinLength = Constants.PasswordMinLength,
-                MaxLength = Constants.PasswordMaxLength
-            };
-            return View(password);
+            _webConfig = webConfig;
         }
 
-        //[HttpPost]
-        //public IActionResult Index(Passwords passwordsRequest)
-        //{
-        //    // TODO: hacer el retorno de la password en otro metodo, en Ajax            
+        public IActionResult Index()
+        {
+            Password passwordDefault = new Password();
+            passwordDefault = _webConfig.Password;
 
-        //    Passwords passwords = new Passwords()
-        //    {
-        //        InputPassword = passwordsRequest.InputPassword,
-        //        OutputPassword = passwordsRequest.OutputPassword,
-        //        Length = passwordsRequest.Length,
-        //        MinLength = Constants.PasswordMinLength,
-        //        MaxLength = Constants.PasswordMaxLength,
-        //        Settings = passwordsRequest.Settings
-        //    };
+            passwordDefault.OutputPassword = null;
+            passwordDefault.MinLength = Constants.PasswordMinLength;
+            passwordDefault.MaxLength = Constants.PasswordMaxLength;
 
-        //    int passwLength = 0;
-
-        //    if (!String.IsNullOrWhiteSpace(passwords.InputPassword))
-        //    {
-        //        passwLength = passwords.InputPassword.Length;
-        //    }
-        //    else
-        //    {
-        //        passwLength = Int32.Parse(passwords.Length);
-        //    }
-
-        //    string existingPasswSymbols = GetSymbols(passwords.InputPassword, Int32.Parse(passwords.Length));
-        //    //// The number of letters will be half of the non-symbol character amount
-        //    //int passwLetterLength = GetLetters(passwords.InputPassword, Int32.Parse(passwords.Length)); // passwLength - existingPasswSymbols.Length;
-
-        //    // The number of number will be half of the non-symbol character amount
-        //    int passNumLength = passwLength - existingPasswSymbols.Length - passwLetterLength;// == 0 ? - passwAlphaLength;           
-
-        //    string symbols = existingPasswSymbols;
-        //    string letters = String.Empty;
-        //    string numbers = String.Empty;
-
-        //    // Generate letters
-        //    for (int i = 0; i < passwLetterLength; i++)
-        //    {
-        //        Random random = new Random();
-        //        // random lowercase letter
-        //        int a = random.Next(0, 26);
-        //        char ch = (char)('a' + a);
-        //        string str = ch.ToString();
-
-        //        // If 'Include UPPERCASE' is checked, If i is even, return Uppercase
-        //        if (true)
-        //        {
-
-        //        }
-        //        if (passwordsRequest.Form[""] == true)
-        //        {
-
-        //        }
-
-        //        System.Math.DivRem(i, 2, out int outvalue);
-        //        if (outvalue == 0)
-        //            str = str.ToUpper();
-
-        //        letters += str;
-        //    }
-
-        //    // Generate numbers
-        //    for (int i = 0; i < passNumLength; i++)
-        //    {
-        //        Random random = new Random();
-        //        // random number
-        //        int a = random.Next(0, 9);
-        //        string str = a.ToString();
-        //        numbers += str;
-        //    }
-
-        //    passwords.OutputPassword = String.Concat(symbols, letters, numbers);
-        //    passwords.OutputPassword = RearrangeString(passwords.OutputPassword);
-
-        //    return View(passwords);
-        //}
+            return View(passwordDefault);
+        }
 
         /// <summary>
         ///     
@@ -115,7 +45,7 @@ namespace WPA_MVC.Controllers
         [HttpPost]
         public JsonResult GetResult(PasswordView passwordRequest)
         {
-            PasswordView toReturn = new PasswordView();
+            Password toReturn = new Password();
             
             int passwLength = 0;
             int passwLettersLength = 0;
@@ -124,45 +54,50 @@ namespace WPA_MVC.Controllers
 
             try
             {
-                if (!String.IsNullOrWhiteSpace(passwordRequest.InputPassword))
-                {
-                    passwLength = passwordRequest.InputPassword.Length;                    
-                }
-                else if (!String.IsNullOrWhiteSpace(passwordRequest.Length))
-                {
-                    passwLength = Int32.Parse(passwordRequest.Length);
-                }
-                else
-                {
-                    passwLength = Constants.PasswordMinLength;
-                }
+                toReturn = _webConfig.Password;
 
-                if (Boolean.TryParse(passwordRequest.Settings.IncludeSymbols, out bool result))        
+                if (!passwordRequest.Equals(toReturn))
                 {
-                    if (result)
+                    if (!String.IsNullOrWhiteSpace(passwordRequest.InputPassword))
                     {
-                        existingPasswSymbols = GetSymbols(passwordRequest.InputPassword, passwLength);
-                    }                    
-                }                
+                        passwLength = passwordRequest.InputPassword.Length;
+                    }
+                    else if (!String.IsNullOrWhiteSpace(passwordRequest.Length))
+                    {
+                        passwLength = Int32.Parse(passwordRequest.Length);
+                    }
+                    else
+                    {
+                        passwLength = Constants.PasswordMinLength;
+                    }
 
-                // The number of letters will be half of the non-symbol character amount
-                passwLettersLength = (int)(Math.Round((decimal)(passwLength - existingPasswSymbols.Length) / 2, MidpointRounding.AwayFromZero));
+                    if (Boolean.TryParse(passwordRequest.Settings.IncludeSymbols, out bool result))
+                    {
+                        if (result)
+                        {
+                            existingPasswSymbols = GetSymbols(passwordRequest.InputPassword, passwLength);
+                        }
+                    }
 
-                // The number of number will be the difference
-                passNumLength = passwLength - existingPasswSymbols.Length - passwLettersLength;
+                    // The number of letters will be half of the non-symbol character amount
+                    passwLettersLength = (int)(Math.Round((decimal)(passwLength - existingPasswSymbols.Length) / 2, MidpointRounding.AwayFromZero));
 
-                string symbols = existingPasswSymbols;
-                // TODO: Buscar una forma buena de pasar bools de JS en string a Controller bool
-                string letters = GetLetters(passwLettersLength, passwordRequest.Settings.IncludeLowercase == "true" ? true : false, passwordRequest.Settings.IncludeUppercase == "true" ? true : false, passwordRequest.Settings.HexadecimalDigits == "true" ? true : false);
-                string numbers = GetNumbers(passNumLength);
+                    // The number of number will be the difference
+                    passNumLength = passwLength - existingPasswSymbols.Length - passwLettersLength;
 
-                toReturn.OutputPassword = String.Concat(symbols, letters, numbers);
+                    string symbols = existingPasswSymbols;
+                    // TODO: Buscar una forma buena de pasar bools de JS en string a Controller bool
+                    string letters = GetLetters(passwLettersLength, passwordRequest.Settings.IncludeLowercase == "true" ? true : false, passwordRequest.Settings.IncludeUppercase == "true" ? true : false, passwordRequest.Settings.HexadecimalDigits == "true" ? true : false);
+                    string numbers = GetNumbers(passNumLength);
 
-                toReturn.OutputPassword = RearrangeString(toReturn.OutputPassword);
-                //if (passwordRequest.Settings.AutoCopyToClipboard == "true")
-                //{
-                //    Clipboard.SetText(toReturn.OutputPassword);
-                //}
+                    toReturn.OutputPassword = String.Concat(symbols, letters, numbers);
+
+                    toReturn.OutputPassword = RearrangeString(toReturn.OutputPassword);
+                    //if (passwordRequest.Settings.AutoCopyToClipboard == "true")
+                    //{
+                    //    Clipboard.SetText(toReturn.OutputPassword);
+                    //}
+                }
             }
             catch (Exception ex)
             {
