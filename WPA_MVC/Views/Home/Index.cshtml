@@ -65,7 +65,7 @@
                     </span>
                 </div>
                 <input id="passw-generator-app-input-passw" type="text" class="form-control" asp-for="InputPassword" value="@Model.InputPassword" placeholder="Enter the pattern password" />
-                @*<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email"></label>*@
+                @*<label for="passw-generator-app-email" class="glyphicon glyphicon-search" rel="tooltip" title="email"></label>*@
                 <div class="input-group-append">
                     <button id="passw-generator-app-btn-submit" class="btn btn-primary">Submit</button>
                     <button id="passw-generator-app-btn-reset-inputs" class="btn btn-danger">Reset</button>
@@ -107,79 +107,79 @@
     <div class="col-sm-12">
         <div class="form-group">
             <input id="passw-generator-app-save-preferences" type="checkbox" asp-for="Settings.SavePreferences" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="save-preferences">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-save-preferences">
                 Save My Preferences in the local machine ( the Length and the Settings below )
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-hide-passw" type="checkbox" asp-for="Settings.HidePassword" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="hide-passw">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-hide-passw">
                 Hide password
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-auto-copy-to-clipboard" type="checkbox" asp-for="Settings.AutoCopyToClipboard" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="auto-copy-to-clipboard">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-auto-copy-to-clipboard">
                 Auto-Copy to Clipboard ( copy the password automatically )
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-include-symbols" type="checkbox" asp-for="Settings.IncludeSymbols" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="include-symbols">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-include-symbols">
                 Include Symbols ( e.g. $%&! )
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-include-numbers" type="checkbox" asp-for="Settings.IncludeNumbers" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="include-numbers">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-include-numbers">
                 Include Numbers ( e.g. 123456 )
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-include-lowercase" type="checkbox" asp-for="Settings.IncludeLowercase" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="include-lowercase">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-include-lowercase">
                 Include Lowercase Characters ( e.g. abcdefgh )
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-include-uppercase" type="checkbox" asp-for="Settings.IncludeUppercase" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="include-uppercase">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-include-uppercase">
                 Include Uppercase Characters ( e.g. ABCDEFGH )
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-hexadecimal-digits" type="checkbox" asp-for="Settings.HexadecimalDigits" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="hexadecimal-digits">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-hexadecimal-digits">
                 Use hexadecimal digits
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-exclude-similar" type="checkbox" asp-for="Settings.ExcludeSimilar" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="exclude-similar">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-exclude-similar">
                 Exclude Similar Characters ( e.g. i, l, 1, L, o, 0, O )
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-exclude-ambiguous" type="checkbox" asp-for="Settings.ExcludeAmbiguous" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="exclude-ambiguous">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-exclude-ambiguous">
                 Exclude Ambiguous Characters ( { } [ ] ( ) / \ ' " ` ~ , ; : . < > )
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-generate-on-device" type="checkbox" asp-for="Settings.GenerateOnDevice" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="generate-on-device">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-generate-on-device">
                 Generate On Your Device ( do NOT send across the Internet )
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-auto-select" type="checkbox" asp-for="Settings.AutoSelect" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="auto-select">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-auto-select">
                 Auto-Select ( select the password automatically )
             </label>
         </div>
         <div class="form-group">
             <input id="passw-generator-app-load-settings-anywhere" type="checkbox" asp-for="Settings.LoadSettingsAnywhere" data-toggle="toggle" />
-            <label name="handle-control-by-code" for="load-settings-anywhere">
+            <label name="handle-control-by-code" class="toggle-switch-label" for="passw-generator-app-load-settings-anywhere">
                 Load My Settings Anywhere - URL to load my settings on other computers quickly
             </label>
         </div>
@@ -233,76 +233,46 @@
 
                  // Handle change events on checkboxes
                  let $checkboxesPreferences = $('input[data-toggle="toggle"]');
-                 $checkboxesPreferences.on('change', function (event, state) {
-                     if ($(this).attr("id") == "passw-generator-app-save-preferences") {                         
-                         if ($(this).is(":checked")) {                               
-                             // Save to storage
-                             if (!localStorage.getItem("passw-generator-app-save-preferences")) {
-                                 // If there were no storage at all, Save all checkboxes to storagr
-                                 SaveDataFromControlsToStorage();                             
-                             } else {
-                                 // If there were already storage, Save just this checkbox to storagr
+                 $checkboxesPreferences.each(function () {
+                     $(this).on('change', function (event, state) {                         
+                         let idSavePreferences = "passw-generator-app-save-preferences";             
+
+                         if ($(this).attr("id") == idSavePreferences) {
+                             if ($(this).is(":checked")) {
+                                 // Save to storage
+                                 if (!localStorage.getItem(idSavePreferences)) {
+                                     // If there were no storage at all, Save all checkboxes to storagr
+                                     SaveDataFromControlsToStorage();
+                                 } else {
+                                     // If there were already storage, Save just this checkbox to storagr
+                                     SaveDataFromControlsToStorage($(this));
+                                 }
+                             }
+                             else {
+                                 // Remove from storage
+                                 localStorage.clear();
+                             }
+                         }
+                         else {
+                             if (localStorage.getItem(idSavePreferences)) {
                                  SaveDataFromControlsToStorage($(this));
                              }
-                         }                         
-                         else {
-                             // Remove from storage
-                             localStorage.clear();
-                         }     
-                     }
-                     else {
-                         if (localStorage.getItem("passw-generator-app-save-preferences")) {
-                             SaveDataFromControlsToStorage($(this));
-                         }
-                     }                                    
+                         }                                               
+                     });
                  });
 
-
-                 //// Bind the label 'click' to the checkbox state
-                     //// TODO: check why with these Bootstrap 5 switchers, <label>
-                     ////     doesn't handle its input with 'for'
-                 //let $labelsPreferences = $("label[name='handle-control-by-code']");
-                 //$labelsPreferences.each(function () {
-                 //    $(this).on('click', function (ev) {
-                 //if ($(this).val() != $(this).is(":checked")) {
-                     //    $(this).bootstrapToggle();
-                     //}
-                 //        let idMatchingControl = $(this).attr("for");
-                 //        //let newState = $("#passw-generator-app-" + idMatchingControl).is(":checked") ? 1 : 0;
-                 //        //$("#passw-generator-app-" + idMatchingControl).prop("checked", newState);
-                 //        $("#passw-generator-app-" + idMatchingControl).bootstrapToggle("toggle");
-                 //        StoreThisValue($("#passw-generator-app-" + idMatchingControl), $("#passw-generator-app-" + idMatchingControl).is(":checked"));
-                 //    });
-                 //});
-
-                 // If "save preferences" for this user is true
-
-
-                 //// Loads the variable with the start data
-                 //LoadDataFromControlsToMemory();
-
-
-                     //passwordRequestOnLoad = {
-                     //    inputPassword: passwordRequest.inputPassword,
-                     //    length: passwordRequest.length,
-                     //    settings:
-                     //    {
-                     //        savePreferences: passwordRequest.savePreferences,
-                     //        hidePassword: passwordRequest.hidePassword,
-                     //        includeSymbols: passwordRequest.includeSymbols,
-                     //        includeNumbers: passwordRequest.includeNumbers,
-                     //        includeLowercase: passwordRequest.includeLowercase,
-                     //        includeUppercase: passwordRequest.includeUppercase,
-                     //        hexadecimalDigits: passwordRequest.hexadecimalDigits,
-                     //        excludeSimilar: passwordRequest.excludeSimilar,
-                     //        excludeAmbiguous: passwordRequest.excludeAmbiguous,
-                     //        generateOnDevice: passwordRequest.generateOnDevice,
-                     //        autoSelect: passwordRequest.autoSelect,
-                     //        autoCopyToClipboard: passwordRequest.autoCopyToClipboard,
-                     //        loadSettingsAnywhere: passwordRequest.loadSettingsAnywhere
-                     //    }
-                     //};
+                 // Bind the label 'click' to the checkbox state
+                 // TODO: check why with these Bootstrap 5 switchers, <label>
+                 //     doesn't handle its input with 'for' neither with 
+                 //     class="toggle-switch-label": some JS jQuery incompatibility.
+                 //     Needed to do it here
+                 let $labelsPreferences = $("label[name='handle-control-by-code']");
+                 $labelsPreferences.each(function () {
+                     $(this).on('click', function (ev) {    
+                         $("#" + $(this).attr("for")).bootstrapToggle("toggle");                                    
+                     });
                  });
+             });                                         
 
              function SaveDataFromControlsToStorage($element) {
                  // If no element is sent, all data is saved to storage
@@ -318,26 +288,20 @@
                          if ("" + $(this).is(":checked") != "" + localStorage.getItem("" + idInput)) {
                              localStorage.setItem("" + idInput, "" + $(this).is(":checked"))
                          }
-                         //if (localStorage.getItem("" + idInput) != 'undefined') {
-                         //    if ("" + $(this).is(":checked") + "" != localStorage.getItem("" + idInput)) {
-                         //        $(this).bootstrapToggle("toggle");
-                         //    }
-                         //}
                      });
                  }
                  // If an element is sent, this element is saved to storage
                  else {
-                     let key = $element.attr("id");                     
+                     let key = "";
                      let value = "";
-                     // CHeck if it's 'length' or a checkbox: if key is undefined, it's an <option> length
-                     if (!key) {
-                         key = $element.parent().attr("id");
-                         value = $element.val();
-                     }
-                     else {
+                     if ($element.attr("type") == "checkbox") {
+                         key = $element.attr("id");
                          value = $element.is(":checked"); 
                      }
-                                                                                                       
+                     else {
+                         key = $element.parent().attr("id");
+                         value = $element.val();
+                     }                                                                                                                            
                      localStorage.setItem(key, "" + value);
                  }
              }
@@ -443,82 +407,14 @@
 
              }
 
-             function CopyToClipboard(textToCopy) {
-                 let $temp = $("<input>");
-                 $("body").append($temp);
-                 $temp.val(textToCopy).select();
-                 document.execCommand("copy");
-                 $temp.remove();
-             }
-
-             //function LoadData(SaveData) {
-             //    // Load the control data
-             //    $("#passw-generator-app-length option[value='" + localStorage.getItem("length") + "']").prop("selected", "selected");
-
-             //    // TODO: cargar del web storage recorriendo
-             //    //     autom. las props del objetoç
-             //    // IMPORTANT: we are catching a data-attribute, should use a 'name' attr.
-             //    let $checkboxesPreferences = $("input[data-toggle='toggle']");
-             //    $checkboxesPreferences.each(function () {
-             //        let idInput = $(this).attr("id");
-             //        if ("" + $(this).is(":checked") + "" != localStorage.getItem("" + idInput)) {
-             //            $(this).bootstrapToggle("toggle");
-             //        }
-             //    });
+             //function CopyToClipboard(textToCopy) {
+             //    let $temp = $("<input>");
+             //    $("body").append($temp);
+             //    $temp.val(textToCopy).select();
+             //    document.execCommand("copy");
+             //    $temp.remove();
              //}
-
-             //function SaveData() {
-
-             //    if ($("#passw-generator-app-save-preferences").is(":checked")) {
-             //        // Save the inputs
-             //        localStorage.setItem("length", $("#passw-generator-app-length option:selected").val());
-             //        console.log("INIT");
-             //        // Save the preferences
-
-             //        // TODO: guardar en web storage recorriendo
-             //        //     autom. las props del objeto
-             //        // IMPORTANT: we are catching a data-attribute, should use a 'name' attr.
-             //        let $checkboxesPreferences = $("input[data-toggle='toggle']");
-             //        $checkboxesPreferences.each(function () {
-             //            let idInput = $(this).attr("id");
-             //            if ($(this).is(":checked") != localStorage.getItem("" + idInput)) {
-             //                localStorage.setItem("" + idInput, "" + $(this).is(":checked"));
-             //            }
-             //        });
-             //    }
-
-             //    // Save the variable
-             //    passwordRequest = {
-             //        inputPassword: $("#passw-generator-app-input-passw").val(),
-             //        length: $("#passw-generator-app-length").val(),
-             //        settings:
-             //        {
-             //            savePreferences: $("#passw-generator-app-save-preferences").is(":checked"),
-             //            hidePassword: $("#passw-generator-app-hide-passw").is(":checked"),
-             //            includeSymbols: $("#passw-generator-app-include-symbols").is(":checked"),
-             //            includeNumbers: $("#passw-generator-app-include-numbers").is(":checked"),
-             //            includeLowercase: $("#passw-generator-app-include-lowercase").is(":checked"),
-             //            includeUppercase: $("#passw-generator-app-include-uppercase").is(":checked"),
-             //            hexadecimalDigits: $("#passw-generator-app-hexadecimal-digits").is(":checked"),
-             //            excludeSimilar: $("#passw-generator-app-exclude-similar").is(":checked"),
-             //            excludeAmbiguous: $("#passw-generator-app-exclude-ambiguous").is(":checked"),
-             //            generateOnDevice: $("#passw-generator-app-generate-on-device").is(":checked"),
-             //            autoSelect: $("#passw-generator-app-auto-select").is(":checked"),
-             //            autoCopyToClipboard: $("#passw-generator-app-auto-copy-to-clipboard").is(":checked"),
-             //            loadSettingsAnywhere: $("#passw-generator-app-load-settings-anywhere").is(":checked")
-             //        }
-             //    };
-             //}
-
-             //function DataChanged() {
-             //    debugger;
-             //    if (JSON.stringify(passwordRequest) != JSON.stringify(passwordRequestStart)) {
-             //        return true;
-             //    } else {
-             //        return false;
-             //    }
-             //}
-
+           
              function AjaxError(jqXHR, textStatus, errorThrown) {
                  alert("Ajax error..");
              }
