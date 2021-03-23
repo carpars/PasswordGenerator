@@ -12,10 +12,7 @@
 
     <li>
         Terminar de implementar todos los settings
-    </li>
-    <li>
-        Defaults (sobre todo settings) desde controller: Hide pass, Save Settings, Include numbers, lowercase and uppercase letters
-    </li>
+    </li>   
 </ol>
 
 @*<form method="post">*@
@@ -308,6 +305,7 @@
 
              function ResetInputs() {
                  $("#passw-generator-app-length option:first-child").prop("selected", "selected");
+                 $("#passw-generator-app-input-passw").val("");
              }
 
              function ResetSettings() {
@@ -407,13 +405,13 @@
 
              }
 
-             //function CopyToClipboard(textToCopy) {
-             //    let $temp = $("<input>");
-             //    $("body").append($temp);
-             //    $temp.val(textToCopy).select();
-             //    document.execCommand("copy");
-             //    $temp.remove();
-             //}
+             function CopyToClipboard(textToCopy) {
+                 let $temp = $("<input>");
+                 $("body").append($temp);
+                 $temp.val(textToCopy).select();
+                 document.execCommand("copy");
+                 $temp.remove();
+             }
            
              function AjaxError(jqXHR, textStatus, errorThrown) {
                  alert("Ajax error..");
