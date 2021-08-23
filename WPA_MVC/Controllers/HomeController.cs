@@ -9,6 +9,8 @@ using WPA_MVC.Models;
 using WPA_MVC.Infrastructure;
 using System.Windows.Forms;
 using Microsoft.Extensions.Configuration;
+using OtpNet;
+
 
 namespace WPA_MVC.Controllers
 {
@@ -22,13 +24,20 @@ namespace WPA_MVC.Controllers
 
         public IActionResult Index()
         {
+
+            Dictionary<object, string> codificationDictionary = new Dictionary<object, string>();
+            foreach (var item in (Constants.Codifications[])Enum.GetValues(typeof(Constants.Codifications)))
+            {
+                codificationDictionary.Add((int)item, Enum.GetName(item.GetType(), item));
+            }
+
             Password passwordDefault = new Password();
             passwordDefault = _webConfig.Password;
 
             passwordDefault.OutputPassword = null;
             passwordDefault.MinLength = Constants.PasswordMinLength;
             passwordDefault.MaxLength = Constants.PasswordMaxLength;
-
+            passwordDefault.CodificationList = SelectList.Build(codificationDictionary, null, false, false, false, false);
             return View(passwordDefault);
         }
 
@@ -46,10 +55,10 @@ namespace WPA_MVC.Controllers
         public JsonResult GetResult(PasswordView passwordRequest)
         {
             Password toReturn = new Password();
-            
+
             int passwLength = 0;
             int passwLettersLength = 0;
-            int passNumLength = 0;            
+            int passNumLength = 0;
             string existingPasswSymbols = String.Empty;
 
             try
@@ -93,6 +102,10 @@ namespace WPA_MVC.Controllers
                     toReturn.OutputPassword = String.Concat(symbols, letters, numbers);
 
                     toReturn.OutputPassword = RearrangeString(toReturn.OutputPassword);
+
+                    int requestCodification = Int32.Parse(passwordRequest.Codification);
+                    toReturn.OutputPassword = GetPasswordEncoded(toReturn.OutputPassword, requestCodification);
+
                     //if (passwordRequest.Settings.AutoCopyToClipboard == "true")
                     //{
                     //    Clipboard.SetText(toReturn.OutputPassword);
@@ -102,9 +115,51 @@ namespace WPA_MVC.Controllers
             catch (Exception ex)
             {
                 throw ex;
-            }            
+            }
 
             return Json(toReturn);
+        }
+
+        private string GetPasswordEncoded(string initPassword, int codification)
+        {
+            string toReturn = initPassword;                        
+
+            switch (codification)
+            {
+                // TODO get the values from enum Codifications
+                case 0:
+                    // TODO convert to Hex
+                    var plainTextBytes0 = System.Text.Encoding.Unicode.GetBytes(initPassword);
+                    toReturn = Convert.ToBase64String(plainTextBytes0);
+                    break;
+
+                case 1:
+                    var plainTextBytes1 = System.Text.Encoding.Unicode.GetBytes(initPassword);
+                    toReturn = Convert.ToBase64String(plainTextBytes1);
+                    break;
+
+                case 2:
+                    var plainTextBytes2 = Base32.Decode(initPassword);// Base32.FromBase32String(initPassword);
+                    toReturn = Base32.Encode(plainTextBytes2); //Base32.ToBase32String(plainTextBytes2);
+                    break;
+
+                case 3:                    
+                    var plainTextBytes3 = System.Text.Encoding.UTF8.GetBytes(initPassword);
+                    toReturn = Convert.ToBase64String(plainTextBytes3);
+                    break;
+
+                case 4:
+                    // TODO convert to Dec
+                    var plainTextBytes4 = System.Text.Encoding.Unicode.GetBytes(initPassword);
+                    toReturn = Convert.ToBase64String(plainTextBytes4);
+                    break;
+
+
+                default:
+                    break;
+            }
+
+            return toReturn;
         }
 
         private static string RearrangeString(string inputString)
@@ -176,7 +231,7 @@ namespace WPA_MVC.Controllers
                     // random lowercase letter
                     a = random.Next(0, 26);
                 }
-                
+
                 char ch = (char)('a' + a);
                 str = ch.ToString();
 

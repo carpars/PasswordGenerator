@@ -12,7 +12,7 @@
 
     <li>
         Terminar de implementar todos los settings
-    </li>   
+    </li>
 </ol>
 
 @*<form method="post">*@
@@ -50,7 +50,31 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-9 col-md-10">
+    <div class="col-sm-3 col-md-2">
+        <div class="form-group">
+            <div class="input-group mb-1">
+                <label class="lbl-for-control-form">
+                    Codification
+                </label>
+                <select id="passw-generator-app-codification" class="form-control" asp-for="Codification">
+                    @{
+                        foreach (var item in Model.CodificationList)
+                        {
+                            if (item.Selected)
+                            {
+                                <option class="container-1row-font-size-normal" value="@item.Value" selected>@item.Text</option>
+                            }
+                            else
+                            {
+                                <option class="container-1row-font-size-normal" value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-8">
         <div class="form-group">
             <label class="lbl-for-control-form">
                 Pattern Password (if any)
@@ -197,17 +221,17 @@
                      LoadDataFromStorageToControls();
                  }
                  // If 'save preferences' for this user is false or null
-                 else {       
+                 else {
                      // If the default 'save preferences' is true, all default preferences are stored
                      if ($("#passw-generator-app-save-preferences").is(":checked")) {
-                         SaveDataFromControlsToStorage();  
+                         SaveDataFromControlsToStorage();
                      }
                      // If the default preference is false, nothing is stored and the storage is cleared
                      else {
                          // TODO Check if this erases also other domains' storage
                          localStorage.clear();
                      }
-                     
+
                  }
 
                  $("#passw-generator-app-btn-submit").on('click', SubmitPasswordRequestAjax);
@@ -231,8 +255,8 @@
                  // Handle change events on checkboxes
                  let $checkboxesPreferences = $('input[data-toggle="toggle"]');
                  $checkboxesPreferences.each(function () {
-                     $(this).on('change', function (event, state) {                         
-                         let idSavePreferences = "passw-generator-app-save-preferences";             
+                     $(this).on('change', function (event, state) {
+                         let idSavePreferences = "passw-generator-app-save-preferences";
 
                          if ($(this).attr("id") == idSavePreferences) {
                              if ($(this).is(":checked")) {
@@ -254,22 +278,22 @@
                              if (localStorage.getItem(idSavePreferences)) {
                                  SaveDataFromControlsToStorage($(this));
                              }
-                         }                                               
+                         }
                      });
                  });
 
                  // Bind the label 'click' to the checkbox state
                  // TODO: check why with these Bootstrap 5 switchers, <label>
-                 //     doesn't handle its input with 'for' neither with 
+                 //     doesn't handle its input with 'for' neither with
                  //     class="toggle-switch-label": some JS jQuery incompatibility.
                  //     Needed to do it here
                  let $labelsPreferences = $("label[name='handle-control-by-code']");
                  $labelsPreferences.each(function () {
-                     $(this).on('click', function (ev) {    
-                         $("#" + $(this).attr("for")).bootstrapToggle("toggle");                                    
+                     $(this).on('click', function (ev) {
+                         $("#" + $(this).attr("for")).bootstrapToggle("toggle");
                      });
                  });
-             });                                         
+             });
 
              function SaveDataFromControlsToStorage($element) {
                  // If no element is sent, all data is saved to storage
@@ -293,12 +317,12 @@
                      let value = "";
                      if ($element.attr("type") == "checkbox") {
                          key = $element.attr("id");
-                         value = $element.is(":checked"); 
+                         value = $element.is(":checked");
                      }
                      else {
                          key = $element.parent().attr("id");
                          value = $element.val();
-                     }                                                                                                                            
+                     }
                      localStorage.setItem(key, "" + value);
                  }
              }
@@ -364,6 +388,7 @@
                  passwordRequest = {
                      inputPassword: $("#passw-generator-app-input-passw").val(),
                      length: $("#passw-generator-app-length").val(),
+                     codification: $("#passw-generator-app-codification").val(),
                      settings:
                      {
                          savePreferences: $("#passw-generator-app-save-preferences").is(":checked"),
@@ -412,7 +437,7 @@
                  document.execCommand("copy");
                  $temp.remove();
              }
-           
+
              function AjaxError(jqXHR, textStatus, errorThrown) {
                  alert("Ajax error..");
              }

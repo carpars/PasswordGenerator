@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WPA_MVC.Infrastructure;
 
 namespace WPA_MVC.Models
 {
@@ -13,7 +14,9 @@ namespace WPA_MVC.Models
         public string OutputPassword { get; set; }
         public string Length { get; set; }
         public int MinLength { get; set; }
-        public int MaxLength { get; set; }
+        public int MaxLength { get; set; }        
+        public List<SelectListItem> CodificationList { get; set; }
+        public string Codification { get; set; }
         public Settings Settings { get; set; }
     }
 
@@ -23,7 +26,8 @@ namespace WPA_MVC.Models
         //  en controller y no deben ser strings        
         public string InputPassword { get; set; }
         public string OutputPassword { get; set; }
-        public string Length { get; set; }        
+        public string Length { get; set; }
+        public string Codification { get; set; }
         public SettingsView Settings { get; set; }        
     }
 
