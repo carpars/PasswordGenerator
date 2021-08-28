@@ -35,12 +35,12 @@ namespace WPA_MVC.Infrastructure
         private static char[] DIGITSUTF8;
         private static char[] DIGITSDEC;
         private static int MASK;
-        private static int SHIFT;       
+        private static int SHIFT;        
         private static Dictionary<char, int> CHAR_MAP = new Dictionary<char, int>();        
         private const string SEPARATOR = "-";
         private static bool isLower = false;
 
-        private BaseConversion(Constants.Codifications codification)
+        public BaseConversion(Constants.Codifications codification)
         {            
             // A base32 char has 5 bits
             DIGITS32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".ToCharArray();
@@ -141,6 +141,7 @@ namespace WPA_MVC.Infrastructure
                 // below, so this may have been wrong to start with).
                 encoded = Regex.Replace(encoded, "[=]*$", "");
 
+                // TODO this is a CJP method, the call should be removed from here since this method is intended to Decode an already base-32 encoded string
                 string encodedBase32 = GetEncodedBase32(encoded);
 
                 // Canonicalize to all upper case
@@ -161,12 +162,12 @@ namespace WPA_MVC.Infrastructure
                     isLower = Char.IsLower(cValue);
                     // Canonicalize to all upper case
                     cValue = cValue.ToString().ToUpper()[0];
-                    if (!CHAR_MAP32.ContainsKey(cValue))
+                    if (!CHAR_MAP.ContainsKey(cValue))
                     {
                         throw new DecodingException("Illegal character: " + c);
                     }
                     buffer <<= SHIFT;
-                    buffer |= CHAR_MAP32[cValue] & MASK;
+                    buffer |= CHAR_MAP[cValue] & MASK;
                     bitsLeft += SHIFT;
                     if (bitsLeft >= 8)
                     {
@@ -198,8 +199,8 @@ namespace WPA_MVC.Infrastructure
                 // Canonicalize to all upper case
                 cValue = cValue.ToString().ToUpper()[0];
                 Random rnd = new Random();
-                int nextRnd = rnd.Next(0, CHAR_MAP32.Count - 1);
-                cValue = CHAR_MAP32.Where(cm => cm.Value == nextRnd).FirstOrDefault().Key.ToString()[0];
+                int nextRnd = rnd.Next(0, CHAR_MAP.Count - 1);
+                cValue = CHAR_MAP.Where(cm => cm.Value == nextRnd).FirstOrDefault().Key.ToString()[0];
                 toReturn.Append(cValue);
             }
             return toReturn;
@@ -245,6 +246,7 @@ namespace WPA_MVC.Infrastructure
                 }
                 int index = MASK & (buffer >> (bitsLeft - SHIFT));
                 bitsLeft -= SHIFT;
+
                 // TODO This is a CJP workaround for having lowercase letters too. This has to be made in the Decode() method, and in a different way
                 char toAppend = DIGITS32[index];
                 if (Char.IsLetter(toAppend))
@@ -265,66 +267,107 @@ namespace WPA_MVC.Infrastructure
             return result.ToString();
         }
 
-        private string ConvertToHexString(byte[] data, bool padOutput)
+        /// <summary>
+        /// CONVERTS any string to Hexadec string; from the input, it just takes the length; no matter if the input isn't hex-encoded string since it will generate the hex char
+        /// </summary>
+        /// <param name="data">data in byte[]</param>
+        /// <param name="padOutput"></param>
+        /// <returns></returns>
+        public string ConvertToHexString(string data)
         {
-            string toReturn;
+            string toReturn = String.Empty;
 
-            if (data.Length == 0)
+            try
             {
-                return "";
-            }
+                var builder = new StringBuilder();
 
-            // SHIFT is the number of bits per output character, so the length of the
-            // output is the length of the input multiplied by 8/SHIFT, rounded up.
-            if (data.Length >= (1 << 28))
-            {
-                // The computation below will fail, so don't do it.
-                throw new ArgumentOutOfRangeException("data");
-            }
+                int length = data.Length;
+                int digitsLength = DIGITSHEX.Length;
 
-            int outputLength = (data.Length * 8 + SHIFTHEX - 1) / SHIFTHEX;
-            StringBuilder result = new StringBuilder(outputLength);
-
-            int buffer = data[0];
-            int next = 1;
-            int bitsLeft = 8;
-            while (bitsLeft > 0 || next < data.Length)
-            {
-                if (bitsLeft < SHIFTHEX)
-                {
-                    if (next < data.Length)
-                    {
-                        buffer <<= 8;
-                        buffer |= (data[next++] & 0xff);
-                        bitsLeft += 8;
-                    }
-                    else
-                    {
-                        int pad = SHIFTHEX - bitsLeft;
-                        buffer <<= pad;
-                        bitsLeft += pad;
-                    }
-                }
-                int index = MASK & (buffer >> (bitsLeft - SHIFTHEX));
-                bitsLeft -= SHIFTHEX;
-                // TODO This is a CJP workaround for having lowercase letters too. This has to be made in the Decode() method, and in a different way
-                char toAppend = DIGITS32[index];
-                if (Char.IsLetter(toAppend))
+                for (int i = 0; i < length; i++)
                 {
                     Random rnd = new Random();
-                    int nextRnd = rnd.Next(0, 5);
-                    bool isOdd = (nextRnd % 2) > 0;
-                    toAppend = isOdd ? toAppend : toAppend.ToString().ToLower()[0];
-                }
-                result.Append(toAppend);
-            }
-            if (padOutput)
-            {
-                int padding = 8 - (result.Length % 8);
-                if (padding > 0) result.Append(new string('=', padding == 8 ? 0 : padding));
-            }
+                    int rndValue = rnd.Next(0, (digitsLength - 1));
 
-            return result.ToString();
+                    // TODO This is a CJP workaround for having lowercase letters too. This has to be made in the Decode() method, and in a different way
+                    char toAppend = (char)DIGITSHEX.GetValue(rndValue);
+                    if (Char.IsLetter(toAppend))
+                    {
+                        Random rndUpperLower = new Random();
+                        int rndValueUpperLower = rndUpperLower.Next(0, 5);
+                        bool isOdd = (rndValueUpperLower % 2) > 0;
+                        toAppend = isOdd ? toAppend : toAppend.ToString().ToLower()[0];
+                    }
+                    builder.Append(toAppend);
+                }
+
+                toReturn = builder.ToString();
+                return toReturn;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+            
+
+            //// CJP: This code is the same than the righ code Base32
+            //if (data.Length == 0)
+            //{
+            //    return "";
+            //}
+
+            //// SHIFT is the number of bits per output character, so the length of the
+            //// output is the length of the input multiplied by 8/SHIFT, rounded up.
+            //if (data.Length >= (1 << 28))
+            //{
+            //    // The computation below will fail, so don't do it.
+            //    throw new ArgumentOutOfRangeException("data");
+            //}
+
+            //int outputLength = (data.Length * 8 + SHIFT - 1) / SHIFT;
+            //StringBuilder result = new StringBuilder(outputLength);
+
+            //int buffer = data[0];
+            //int next = 1;
+            //int bitsLeft = 8;
+            //while (bitsLeft > 0 || next < data.Length)
+            //{
+            //    if (bitsLeft < SHIFT)
+            //    {
+            //        if (next < data.Length)
+            //        {
+            //            buffer <<= 8;
+            //            buffer |= (data[next++] & 0xff);
+            //            bitsLeft += 8;
+            //        }
+            //        else
+            //        {
+            //            int pad = SHIFT - bitsLeft;
+            //            buffer <<= pad;
+            //            bitsLeft += pad;
+            //        }
+            //    }
+            //    int index = MASK & (buffer >> (bitsLeft - SHIFT));
+            //    bitsLeft -= SHIFT;
+            //    // TODO This is a CJP workaround for having lowercase letters too. This has to be made in the Decode() method, and in a different way
+            //    char toAppend = DIGITS32[index];
+            //    if (Char.IsLetter(toAppend))
+            //    {
+            //        Random rnd = new Random();
+            //        int nextRnd = rnd.Next(0, 5);
+            //        bool isOdd = (nextRnd % 2) > 0;
+            //        toAppend = isOdd ? toAppend : toAppend.ToString().ToLower()[0];
+            //    }
+            //    result.Append(toAppend);
+            //}
+            //if (padOutput)
+            //{
+            //    int padding = 8 - (result.Length % 8);
+            //    if (padding > 0) result.Append(new string('=', padding == 8 ? 0 : padding));
+            //}
+
+            //return result.ToString();
         }
 
         private class DecodingException : Exception

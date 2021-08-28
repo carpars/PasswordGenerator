@@ -129,8 +129,10 @@ namespace WPA_MVC.Controllers
                 // TODO get the values from enum Codifications
                 case 0:
                     // TODO convert to Hex
-                    var plainTextBytes0 = System.Text.Encoding.Unicode.GetBytes(initPassword);
-                    toReturn = ConvertToHexString(plainTextBytes0);
+                    //var plainTextBytes0 = System.Text.Encoding.Unicode.GetBytes(initPassword);
+                    //toReturn = ConvertToHexString(plainTextBytes0);
+                    BaseConversion baseConversion = new BaseConversion(Constants.Codifications.Hex);
+                    toReturn = baseConversion.ConvertToHexString(initPassword);
                     break;
 
                 case 1:
