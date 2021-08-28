@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Text.RegularExpressions;
+using WPA_MVC.Infrastructure;
 
 namespace WPA_MVC.Infrastructure
 {
@@ -25,33 +26,68 @@ namespace WPA_MVC.Infrastructure
   */
 
 
-    public static class BaseConversion
+    public class BaseConversion
     {
-
-        private static readonly char[] DIGITS32;
-        private static readonly char[] DIGITSHEX;
-        private static readonly int MASK;
-        private static readonly int SHIFT32;
-        private static readonly int SHIFTHEX;
-        private static Dictionary<char, int> CHAR_MAP32 = new Dictionary<char, int>();
-        private static Dictionary<char, int> CHAR_MAPHEX = new Dictionary<char, int>();
+        private static char[] DIGITS;
+        private static char[] DIGITS32;
+        private static char[] DIGITS64;
+        private static char[] DIGITSHEX;
+        private static char[] DIGITSUTF8;
+        private static char[] DIGITSDEC;
+        private static int MASK;
+        private static int SHIFT;       
+        private static Dictionary<char, int> CHAR_MAP = new Dictionary<char, int>();        
         private const string SEPARATOR = "-";
         private static bool isLower = false;
 
-        static BaseConversion()
-        {
+        private BaseConversion(Constants.Codifications codification)
+        {            
             // A base32 char has 5 bits
             DIGITS32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".ToCharArray();
             // An hex char has 4 bits
-            DIGITSHEX = "0123456789ABCDEF".ToCharArray();
-            MASK = DIGITS32.Length - 1;
-            SHIFT32 = numberOfTrailingZerosBase32(DIGITS32.Length);
-            for (int i = 0; i < DIGITS32.Length; i++) CHAR_MAP32[DIGITS32[i]] = i;
-            SHIFTHEX = numberOfTrailingZerosBaseHex(DIGITSHEX.Length);
-            for (int i = 0; i < DIGITSHEX.Length; i++) CHAR_MAPHEX[DIGITSHEX[i]] = i;
+            DIGITSHEX = "0123456789ABCDEF".ToCharArray();            
+            // An UTF-8 char has 8 bits
+            DIGITSUTF8 = "0123456789ABCDEF".ToCharArray();
+            // An Dec char has 4 bits
+            DIGITSDEC = "0123456789".ToCharArray();
+
+            switch (codification)
+            {
+                case Constants.Codifications.Hex:
+                    SetInitVariables(DIGITSHEX.Length, codification, DIGITSHEX);
+                    break;
+
+                case Constants.Codifications.Base64:
+                    SetInitVariables(DIGITS64.Length, codification, DIGITS64);
+                    break;
+
+                case Constants.Codifications.Base32:                   
+                    SetInitVariables(DIGITS32.Length, codification, DIGITS32);                                        
+                    break;
+
+                case Constants.Codifications.UTF8:
+                    SetInitVariables(DIGITSUTF8.Length, codification, DIGITSUTF8);
+                    break;
+                
+                case Constants.Codifications.Dec:
+                    SetInitVariables(DIGITSDEC.Length, codification, DIGITSDEC);
+                    break;
+
+                default:
+                    break;
+            }
+            
+                      
         }
 
-        private static int numberOfTrailingZerosBase32(int i)
+        private static void SetInitVariables(int digitsLength, Constants.Codifications codification, char[] digits)
+        {
+            MASK = digitsLength;
+            SHIFT = numberOfTrailingZeros(digitsLength, codification);
+            for (int i = 0; i < digitsLength; i++) CHAR_MAP[digits[i]] = i;
+        }
+
+        private static int numberOfTrailingZeros(int i, Constants.Codifications codification)
         {
             // HD, Figure 5-14
             int y;
@@ -62,20 +98,7 @@ namespace WPA_MVC.Infrastructure
             y = i << 4; if (y != 0) { n = n - 4; i = y; }
             y = i << 2; if (y != 0) { n = n - 2; i = y; }
             return n - (int)((uint)(i << 1) >> 31);
-        }
-
-        private static int numberOfTrailingZerosBaseHex(int i)
-        {
-            // HD, Figure 5-14
-            int y;
-            if (i == 0) return 32;
-            int n = 31;
-            y = i << 16; if (y != 0) { n = n - 16; i = y; }
-            y = i << 8; if (y != 0) { n = n - 8; i = y; }
-            y = i << 4; if (y != 0) { n = n - 4; i = y; }
-            y = i << 2; if (y != 0) { n = n - 2; i = y; }
-            return n - (int)((uint)(i << 1) >> 31);
-        }
+        }        
 
         public static byte[] Decode(string encoded)
         {
@@ -98,7 +121,7 @@ namespace WPA_MVC.Infrastructure
                     return new byte[0];
                 }
                 int encodedLength = encoded.Length;
-                int outLength = encodedLength * SHIFT32 / 8;
+                int outLength = encodedLength * SHIFT / 8;
                 byte[] result = new byte[outLength];
                 int buffer = 0;
                 int next = 0;
@@ -113,9 +136,9 @@ namespace WPA_MVC.Infrastructure
                     {
                         throw new DecodingException("Illegal character: " + c);
                     }
-                    buffer <<= SHIFT32;
+                    buffer <<= SHIFT;
                     buffer |= CHAR_MAP32[cValue] & MASK;
-                    bitsLeft += SHIFT32;
+                    bitsLeft += SHIFT;
                     if (bitsLeft >= 8)
                     {
                         result[next++] = (byte)(buffer >> (bitsLeft - 8));
@@ -168,7 +191,7 @@ namespace WPA_MVC.Infrastructure
                 throw new ArgumentOutOfRangeException("data");
             }
 
-            int outputLength = (data.Length * 8 + SHIFT32 - 1) / SHIFT32;
+            int outputLength = (data.Length * 8 + SHIFT - 1) / SHIFT;
             StringBuilder result = new StringBuilder(outputLength);
 
             int buffer = data[0];
@@ -176,7 +199,7 @@ namespace WPA_MVC.Infrastructure
             int bitsLeft = 8;
             while (bitsLeft > 0 || next < data.Length)
             {
-                if (bitsLeft < SHIFT32)
+                if (bitsLeft < SHIFT)
                 {
                     if (next < data.Length)
                     {
@@ -186,13 +209,13 @@ namespace WPA_MVC.Infrastructure
                     }
                     else
                     {
-                        int pad = SHIFT32 - bitsLeft;
+                        int pad = SHIFT - bitsLeft;
                         buffer <<= pad;
                         bitsLeft += pad;
                     }
                 }
-                int index = MASK & (buffer >> (bitsLeft - SHIFT32));
-                bitsLeft -= SHIFT32;
+                int index = MASK & (buffer >> (bitsLeft - SHIFT));
+                bitsLeft -= SHIFT;
                 // TODO This is a CJP workaround for having lowercase letters too. This has to be made in the Decode() method, and in a different way
                 char toAppend = DIGITS32[index];
                 if (Char.IsLetter(toAppend))
