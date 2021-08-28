@@ -25,25 +25,46 @@ namespace WPA_MVC.Infrastructure
   */
 
 
-    public static class Base32
+    public static class BaseConversion
     {
 
-        private static readonly char[] DIGITS;        
+        private static readonly char[] DIGITS32;
+        private static readonly char[] DIGITSHEX;
         private static readonly int MASK;
-        private static readonly int SHIFT;
-        private static Dictionary<char, int> CHAR_MAP = new Dictionary<char, int>();
+        private static readonly int SHIFT32;
+        private static readonly int SHIFTHEX;
+        private static Dictionary<char, int> CHAR_MAP32 = new Dictionary<char, int>();
+        private static Dictionary<char, int> CHAR_MAPHEX = new Dictionary<char, int>();
         private const string SEPARATOR = "-";
         private static bool isLower = false;
 
-        static Base32()
+        static BaseConversion()
         {
-            DIGITS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".ToCharArray();            
-            MASK = DIGITS.Length - 1;
-            SHIFT = numberOfTrailingZeros(DIGITS.Length);
-            for (int i = 0; i < DIGITS.Length; i++) CHAR_MAP[DIGITS[i]] = i;
+            // A base32 char has 5 bits
+            DIGITS32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".ToCharArray();
+            // An hex char has 4 bits
+            DIGITSHEX = "0123456789ABCDEF".ToCharArray();
+            MASK = DIGITS32.Length - 1;
+            SHIFT32 = numberOfTrailingZerosBase32(DIGITS32.Length);
+            for (int i = 0; i < DIGITS32.Length; i++) CHAR_MAP32[DIGITS32[i]] = i;
+            SHIFTHEX = numberOfTrailingZerosBaseHex(DIGITSHEX.Length);
+            for (int i = 0; i < DIGITSHEX.Length; i++) CHAR_MAPHEX[DIGITSHEX[i]] = i;
         }
 
-        private static int numberOfTrailingZeros(int i)
+        private static int numberOfTrailingZerosBase32(int i)
+        {
+            // HD, Figure 5-14
+            int y;
+            if (i == 0) return 32;
+            int n = 31;
+            y = i << 16; if (y != 0) { n = n - 16; i = y; }
+            y = i << 8; if (y != 0) { n = n - 8; i = y; }
+            y = i << 4; if (y != 0) { n = n - 4; i = y; }
+            y = i << 2; if (y != 0) { n = n - 2; i = y; }
+            return n - (int)((uint)(i << 1) >> 31);
+        }
+
+        private static int numberOfTrailingZerosBaseHex(int i)
         {
             // HD, Figure 5-14
             int y;
@@ -57,7 +78,7 @@ namespace WPA_MVC.Infrastructure
         }
 
         public static byte[] Decode(string encoded)
-        {            
+        {
             try
             {
                 // Remove whitespace and separators
@@ -68,6 +89,8 @@ namespace WPA_MVC.Infrastructure
                 // below, so this may have been wrong to start with).
                 encoded = Regex.Replace(encoded, "[=]*$", "");
 
+                string encodedBase32 = GetEncodedBase32(encoded);
+
                 // Canonicalize to all upper case
                 //encoded = encoded.ToUpper();
                 if (encoded.Length == 0)
@@ -75,7 +98,7 @@ namespace WPA_MVC.Infrastructure
                     return new byte[0];
                 }
                 int encodedLength = encoded.Length;
-                int outLength = encodedLength * SHIFT / 8;
+                int outLength = encodedLength * SHIFT32 / 8;
                 byte[] result = new byte[outLength];
                 int buffer = 0;
                 int next = 0;
@@ -86,19 +109,13 @@ namespace WPA_MVC.Infrastructure
                     isLower = Char.IsLower(cValue);
                     // Canonicalize to all upper case
                     cValue = cValue.ToString().ToUpper()[0];
-                    if (!CHAR_MAP.ContainsKey(cValue))
+                    if (!CHAR_MAP32.ContainsKey(cValue))
                     {
-                        // TODO CJP: WOrkaround made by me: replace for a legal char. This shouldn't be done, since it's expected to receive a valid base32 string, and to throw an Except if not                                                
-                        // The illegarl char is replaced by a valid random char
-                        Random rnd = new Random();
-                        int nextRnd = rnd.Next(0, CHAR_MAP.Count - 1);
-                        cValue = CHAR_MAP.Where(cm => cm.Value == nextRnd).FirstOrDefault().Key.ToString()[0];
-
-                        //throw new DecodingException("Illegal character: " + c);
+                        throw new DecodingException("Illegal character: " + c);
                     }
-                    buffer <<= SHIFT;
-                    buffer |= CHAR_MAP[cValue] & MASK;
-                    bitsLeft += SHIFT;
+                    buffer <<= SHIFT32;
+                    buffer |= CHAR_MAP32[cValue] & MASK;
+                    bitsLeft += SHIFT32;
                     if (bitsLeft >= 8)
                     {
                         result[next++] = (byte)(buffer >> (bitsLeft - 8));
@@ -118,6 +135,23 @@ namespace WPA_MVC.Infrastructure
             }
         }
 
+        private static string GetEncodedBase32(string input)
+        {
+            string toReturn = String.Empty;
+
+            foreach (char c in input.ToCharArray())
+            {
+                char cValue = c;
+                isLower = Char.IsLower(cValue);
+                // Canonicalize to all upper case
+                cValue = cValue.ToString().ToUpper()[0];
+                Random rnd = new Random();
+                int nextRnd = rnd.Next(0, CHAR_MAP32.Count - 1);
+                cValue = CHAR_MAP32.Where(cm => cm.Value == nextRnd).FirstOrDefault().Key.ToString()[0];
+                toReturn.Append(cValue);
+            }
+            return toReturn;
+        }
 
         public static string Encode(byte[] data, bool padOutput = false)
         {
@@ -134,7 +168,7 @@ namespace WPA_MVC.Infrastructure
                 throw new ArgumentOutOfRangeException("data");
             }
 
-            int outputLength = (data.Length * 8 + SHIFT - 1) / SHIFT;
+            int outputLength = (data.Length * 8 + SHIFT32 - 1) / SHIFT32;
             StringBuilder result = new StringBuilder(outputLength);
 
             int buffer = data[0];
@@ -142,7 +176,7 @@ namespace WPA_MVC.Infrastructure
             int bitsLeft = 8;
             while (bitsLeft > 0 || next < data.Length)
             {
-                if (bitsLeft < SHIFT)
+                if (bitsLeft < SHIFT32)
                 {
                     if (next < data.Length)
                     {
@@ -152,21 +186,21 @@ namespace WPA_MVC.Infrastructure
                     }
                     else
                     {
-                        int pad = SHIFT - bitsLeft;
+                        int pad = SHIFT32 - bitsLeft;
                         buffer <<= pad;
                         bitsLeft += pad;
                     }
                 }
-                int index = MASK & (buffer >> (bitsLeft - SHIFT));
-                bitsLeft -= SHIFT;
+                int index = MASK & (buffer >> (bitsLeft - SHIFT32));
+                bitsLeft -= SHIFT32;
                 // TODO This is a CJP workaround for having lowercase letters too. This has to be made in the Decode() method, and in a different way
-                char toAppend = DIGITS[index];
+                char toAppend = DIGITS32[index];
                 if (Char.IsLetter(toAppend))
                 {
                     Random rnd = new Random();
                     int nextRnd = rnd.Next(0, 5);
                     bool isOdd = (nextRnd % 2) > 0;
-                    toAppend = isOdd ? toAppend : toAppend.ToString().ToLower()[0];                    
+                    toAppend = isOdd ? toAppend : toAppend.ToString().ToLower()[0];
                 }
                 result.Append(toAppend);
             }
@@ -175,7 +209,69 @@ namespace WPA_MVC.Infrastructure
                 int padding = 8 - (result.Length % 8);
                 if (padding > 0) result.Append(new string('=', padding == 8 ? 0 : padding));
             }
-            
+
+            return result.ToString();
+        }
+
+        private string ConvertToHexString(byte[] data, bool padOutput)
+        {
+            string toReturn;
+
+            if (data.Length == 0)
+            {
+                return "";
+            }
+
+            // SHIFT is the number of bits per output character, so the length of the
+            // output is the length of the input multiplied by 8/SHIFT, rounded up.
+            if (data.Length >= (1 << 28))
+            {
+                // The computation below will fail, so don't do it.
+                throw new ArgumentOutOfRangeException("data");
+            }
+
+            int outputLength = (data.Length * 8 + SHIFTHEX - 1) / SHIFTHEX;
+            StringBuilder result = new StringBuilder(outputLength);
+
+            int buffer = data[0];
+            int next = 1;
+            int bitsLeft = 8;
+            while (bitsLeft > 0 || next < data.Length)
+            {
+                if (bitsLeft < SHIFTHEX)
+                {
+                    if (next < data.Length)
+                    {
+                        buffer <<= 8;
+                        buffer |= (data[next++] & 0xff);
+                        bitsLeft += 8;
+                    }
+                    else
+                    {
+                        int pad = SHIFTHEX - bitsLeft;
+                        buffer <<= pad;
+                        bitsLeft += pad;
+                    }
+                }
+                int index = MASK & (buffer >> (bitsLeft - SHIFTHEX));
+                bitsLeft -= SHIFTHEX;
+                // TODO This is a CJP workaround for having lowercase letters too. This has to be made in the Decode() method, and in a different way
+                char toAppend = DIGITS32[index];
+                if (Char.IsLetter(toAppend))
+                {
+                    Random rnd = new Random();
+                    int nextRnd = rnd.Next(0, 5);
+                    bool isOdd = (nextRnd % 2) > 0;
+                    toAppend = isOdd ? toAppend : toAppend.ToString().ToLower()[0];
+                }
+                result.Append(toAppend);
+            }
+            if (padOutput)
+            {
+                int padding = 8 - (result.Length % 8);
+                if (padding > 0) result.Append(new string('=', padding == 8 ? 0 : padding));
+            }
+
             return result.ToString();
         }
 

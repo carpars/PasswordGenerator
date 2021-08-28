@@ -130,7 +130,7 @@ namespace WPA_MVC.Controllers
                 case 0:
                     // TODO convert to Hex
                     var plainTextBytes0 = System.Text.Encoding.Unicode.GetBytes(initPassword);
-                    toReturn = Convert.ToBase64String(plainTextBytes0);
+                    toReturn = ConvertToHexString(plainTextBytes0);
                     break;
 
                 case 1:
@@ -139,8 +139,8 @@ namespace WPA_MVC.Controllers
                     break;
 
                 case 2:
-                    var plainTextBytes2 = Base32.Decode(initPassword);// Base32.FromBase32String(initPassword);
-                    toReturn = Base32.Encode(plainTextBytes2); //Base32.ToBase32String(plainTextBytes2);
+                    var plainTextBytes2 = BaseConversion.Decode(initPassword);// Base32.FromBase32String(initPassword);
+                    toReturn = BaseConversion.Encode(plainTextBytes2); //Base32.ToBase32String(plainTextBytes2);
                     break;
 
                 case 3:                    
