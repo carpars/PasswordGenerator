@@ -82,6 +82,13 @@ namespace WPA_MVC.Infrastructure
 
         private string CheckOperator()
         {
+            // The << operator shifts its left-hand operand left by the number of bits defined by its right-hand operand
+
+            // The following operators perform bitwise or shift operations with operands of the integral numeric types or the char type:
+            //      Unary ~(bitwise complement) operator
+            //      Binary << (left shift) and >> (right shift) shift operators
+            //      Binary & (logical AND), | (logical OR), and ^ (logical exclusive OR) operators
+
             string toReturn = String.Empty;
 
             string whole = "d4ertyu3";
