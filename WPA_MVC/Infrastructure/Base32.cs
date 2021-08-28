@@ -80,6 +80,28 @@ namespace WPA_MVC.Infrastructure
                       
         }
 
+        private string CheckOperator()
+        {
+            string toReturn = String.Empty;
+
+            string whole = "d4ertyu3";
+            int y;
+            int index = whole.Length - 1;
+            int offset = 1;
+            double charCode;
+            toReturn+="Hello World; initial string: " + whole;
+            for (int i = index; i >= 0;)
+            {
+                char thisChar = whole[i];
+                i -= offset;
+                y = i << offset;
+                charCode = Char.GetNumericValue(whole[index]);
+
+                toReturn += "\n\r" + "position=" + (i + 1) + ", thisChar=" + thisChar + ", y=" + y.ToString() + ", charCode=" + charCode.ToString();
+            }
+            return toReturn;
+        }
+
         private static void SetInitVariables(int digitsLength, Constants.Codifications codification, char[] digits)
         {
             MASK = digitsLength;
