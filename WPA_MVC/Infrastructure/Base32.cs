@@ -38,9 +38,11 @@ namespace WPA_MVC.Infrastructure
         private static int SHIFT;        
         private static Dictionary<char, int> CHAR_MAP = new Dictionary<char, int>();        
         private const string SEPARATOR = "-";
-        private static bool isLower = false;
+        private static bool _includeLowercase; 
+        private static bool _includeUppercase;
+        private static bool isLower;
 
-        public BaseConversion(Constants.Codifications codification)
+        public BaseConversion(Constants.Codifications codification, bool includeLowercase, bool includeUppercase)
         {            
             // A base32 char has 5 bits
             DIGITS32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".ToCharArray();
@@ -76,8 +78,9 @@ namespace WPA_MVC.Infrastructure
                 default:
                     break;
             }
-            
-                      
+
+            _includeLowercase = includeLowercase;
+            _includeUppercase = includeUppercase;
         }
 
         private string CheckOperator()
@@ -293,10 +296,21 @@ namespace WPA_MVC.Infrastructure
                     char toAppend = (char)DIGITSHEX.GetValue(rndValue);
                     if (Char.IsLetter(toAppend))
                     {
-                        Random rndUpperLower = new Random();
-                        int rndValueUpperLower = rndUpperLower.Next(0, 5);
-                        bool isOdd = (rndValueUpperLower % 2) > 0;
-                        toAppend = isOdd ? toAppend : toAppend.ToString().ToLower()[0];
+                        if (!_includeUppercase)
+                        {
+                            toAppend = toAppend.ToString().ToLower()[0];
+                        }
+                        else if (!_includeLowercase)
+                        {
+                            toAppend = toAppend.ToString().ToUpper()[0];
+                        }                        
+                        else
+                        {
+                            Random rndUpperLower = new Random();
+                            int rndValueUpperLower = rndUpperLower.Next(0, 5);
+                            bool isOdd = (rndValueUpperLower % 2) > 0;
+                            toAppend = isOdd ? toAppend : toAppend.ToString().ToLower()[0];
+                        }                       
                     }
                     builder.Append(toAppend);
                 }

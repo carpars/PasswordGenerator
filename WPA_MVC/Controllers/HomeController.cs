@@ -17,6 +17,9 @@ namespace WPA_MVC.Controllers
     public class HomeController : Controller
     {
         private WebConfig _webConfig;
+        private static bool _includeLowercase;
+        private static bool _includeUppercase;
+
         public HomeController(WebConfig webConfig)
         {
             _webConfig = webConfig;
@@ -60,10 +63,11 @@ namespace WPA_MVC.Controllers
             int passwLettersLength = 0;
             int passNumLength = 0;
             string existingPasswSymbols = String.Empty;
+            bool result;
 
             try
             {
-                toReturn = _webConfig.Password;
+                toReturn = _webConfig.Password;                
 
                 if (!passwordRequest.Equals(toReturn))
                 {
@@ -80,12 +84,21 @@ namespace WPA_MVC.Controllers
                         passwLength = Constants.PasswordMinLength;
                     }
 
-                    if (Boolean.TryParse(passwordRequest.Settings.IncludeSymbols, out bool result))
+                    if (Boolean.TryParse(passwordRequest.Settings.IncludeSymbols, out result))
                     {
                         if (result)
                         {
                             existingPasswSymbols = GetSymbols(passwordRequest.InputPassword, passwLength);
                         }
+                    }
+
+                    if (Boolean.TryParse(passwordRequest.Settings.IncludeLowercase, out result))
+                    {
+                        _includeLowercase = result;
+                    }
+                    if (Boolean.TryParse(passwordRequest.Settings.IncludeUppercase, out result))
+                    {
+                        _includeUppercase = result;
                     }
 
                     // The number of letters will be half of the non-symbol character amount
@@ -96,7 +109,7 @@ namespace WPA_MVC.Controllers
 
                     string symbols = existingPasswSymbols;
                     // TODO: Buscar una forma buena de pasar bools de JS en string a Controller bool
-                    string letters = GetLetters(passwLettersLength, passwordRequest.Settings.IncludeLowercase == "true" ? true : false, passwordRequest.Settings.IncludeUppercase == "true" ? true : false, passwordRequest.Settings.HexadecimalDigits == "true" ? true : false);
+                    string letters = GetLetters(passwLettersLength, _includeLowercase, _includeUppercase, passwordRequest.Settings.HexadecimalDigits == "true" ? true : false);
                     string numbers = GetNumbers(passNumLength);
 
                     toReturn.OutputPassword = String.Concat(symbols, letters, numbers);
@@ -131,7 +144,7 @@ namespace WPA_MVC.Controllers
                     // TODO convert to Hex
                     //var plainTextBytes0 = System.Text.Encoding.Unicode.GetBytes(initPassword);
                     //toReturn = ConvertToHexString(plainTextBytes0);
-                    BaseConversion baseConversion = new BaseConversion(Constants.Codifications.Hex);
+                    BaseConversion baseConversion = new BaseConversion(Constants.Codifications.Hex, _includeLowercase, _includeUppercase);
                     toReturn = baseConversion.ConvertToHexString(initPassword);
                     break;
 
@@ -256,6 +269,16 @@ namespace WPA_MVC.Controllers
                 }
 
                 toReturn += str;
+            }
+
+            
+            if (!includeUppercase)
+            {
+                toReturn = toReturn.ToLower();
+            }
+            else if (!includeLowercase)
+            {
+                toReturn = toReturn.ToUpper();
             }
 
             return toReturn;
