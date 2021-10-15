@@ -155,7 +155,9 @@ namespace WPA_MVC.Controllers
                     var plainTextBytes4 = System.Text.Encoding.Unicode.GetBytes(initPassword);
                     toReturn = Convert.ToBase64String(plainTextBytes4);
                     break;
-
+                
+                case 5:                                        
+                    break;
 
                 default:
                     break;

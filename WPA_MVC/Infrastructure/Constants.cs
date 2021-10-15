@@ -17,7 +17,8 @@ namespace WPA_MVC.Infrastructure
             Base64,
             Base32,
             UTF8,
-            Dec
+            Dec,
+            NONE
         }
     }
 }
